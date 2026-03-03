@@ -45,8 +45,21 @@
       background: rgba(255, 255, 255, 0.8);
     }
 
-    .pub-list li strong { color: var(--fg); font-weight: 600; }
     .pub-list li em { color: var(--fg); font-style: italic; }
+
+    .pub-list li a {
+      color: var(--fg);
+      font-weight: 500;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(37, 99, 235, 0.3);
+      padding-bottom: 1px;
+      transition: color 0.12s, border-color 0.12s;
+    }
+
+    .pub-list li a:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
 
     .status-badge {
       display: inline-block;
@@ -59,6 +72,7 @@
       margin-left: 6px;
       vertical-align: middle;
       font-style: normal;
+      font-weight: 500;
     }
   </style>
 </head>
@@ -71,150 +85,154 @@
     <div class="pub-year-section">
       <h2>2023</h2>
       <ul class="pub-list">
-        <li>The Anderson mobility edge as a percolation transition (with Marcel Filoche, Pierre Pelletier, and Dominique Delande).<span class="status-badge">submitted</span></li>
-        <li>The landscape function on &#8477;<sup>d</sup> (with Guy David and Antoine Gloria).<span class="status-badge">submitted</span></li>
-        <li>Critical perturbations for second order elliptic operators. Part II: Non-tangential maximal function estimates (with Simon Bortz, Steve Hofmann, Jose Luis Luna Garcia, Bruno Poggi).<span class="status-badge">submitted</span></li>
-        <li>Small A<sub>&#8734;</sub> results for Dahlberg-Kenig-Pipher operators in sets with uniformly rectifiable boundaries (with Guy David and Linhan Li). <em>Trans. Am. Math. Soc.</em>, accepted.</li>
-        <li>The Regularity problem in domains with lower dimensional boundaries (with Zanbing Dai and Joseph Feneuil). <em>Journal of Functional Analysis</em>, (2023).</li>
-        <li>Green functions and smooth distances (with Joseph Feneuil and Linhan Li). <em>Math. Ann.</em>, (2023).</li>
-        <li>Transference of scale-invariant estimates from Lipschitz to Non-tangentially accessible to Uniformly rectifiable domains (with Steve Hofmann and Jose Maria Martell). <em>Anal. PDE</em>, (2023).</li>
-        <li>On an Effective Equation of the Reduced Hartree-Fock Theory (with Ilias Chenn, Wei Wang, and Shiwen Zhang). <em>Adv. Nonlinear Stud.</em>, Special Issue in honor of David Jerison, (2023).</li>
-        <li>Elliptic theory in domains with boundaries of mixed dimension (with Guy David and Joseph Feneuil). <em>Asterisque</em>, (2023).</li>
-        <li>Carleson Perturbations for the Regularity problem (with Zanbing Dai and Joseph Feneuil). <em>Revista Matematica Iberoamericana</em>, (2023).</li>
+        <li><a href="https://arxiv.org/pdf/2309.03813.pdf" target="_blank" rel="noopener noreferrer">The Anderson mobility edge as a percolation transition</a> (with Marcel Filoche, Pierre Pelletier, and Dominique Delande).<span class="status-badge">submitted</span></li>
+        <li><a href="https://arxiv.org/pdf/2307.11182.pdf" target="_blank" rel="noopener noreferrer">The landscape function on &#8477;<sup>d</sup></a> (with Guy David and Antoine Gloria).<span class="status-badge">submitted</span></li>
+        <li><a href="https://arxiv.org/pdf/2302.02746.pdf" target="_blank" rel="noopener noreferrer">Critical perturbations for second order elliptic operators. Part II: Non-tangential maximal function estimates</a> (with Simon Bortz, Steve Hofmann, Jose Luis Luna Garcia, Bruno Poggi).<span class="status-badge">submitted</span></li>
+        <li><a href="https://arxiv.org/pdf/2207.13602.pdf" target="_blank" rel="noopener noreferrer">Small A<sub>&#8734;</sub> results for Dahlberg-Kenig-Pipher operators in sets with uniformly rectifiable boundaries</a> (with Guy David and Linhan Li). <em>Trans. Am. Math. Soc.</em>, accepted.</li>
+        <li><a href="https://arxiv.org/pdf/2208.00628.pdf" target="_blank" rel="noopener noreferrer">The Regularity problem in domains with lower dimensional boundaries</a> (with Zanbing Dai and Joseph Feneuil). <em>Journal of Functional Analysis</em>, (2023).</li>
+        <li><a href="https://arxiv.org/pdf/2211.05318.pdf" target="_blank" rel="noopener noreferrer">Green functions and smooth distances</a> (with Joseph Feneuil and Linhan Li). <em>Math. Ann.</em>, (2023).</li>
+        <li><a href="https://arxiv.org/pdf/1904.13116.pdf" target="_blank" rel="noopener noreferrer">Transference of scale-invariant estimates from Lipschitz to Non-tangentially accessible to Uniformly rectifiable domains</a> (with Steve Hofmann and Jose Maria Martell). <em>Anal. PDE</em>, (2023).</li>
+        <li><a href="https://arxiv.org/pdf/2106.13887.pdf" target="_blank" rel="noopener noreferrer">On an Effective Equation of the Reduced Hartree-Fock Theory</a> (with Ilias Chenn, Wei Wang, and Shiwen Zhang). <em>Adv. Nonlinear Stud.</em>, Special Issue in honor of David Jerison, (2023).</li>
+        <li><a href="https://arxiv.org/pdf/2003.09037.pdf" target="_blank" rel="noopener noreferrer">Elliptic theory in domains with boundaries of mixed dimension</a> (with Guy David and Joseph Feneuil). <em>Asterisque</em>, (2023).</li>
+        <li><a href="https://arxiv.org/pdf/2203.07992.pdf" target="_blank" rel="noopener noreferrer">Carleson Perturbations for the Regularity problem</a> (with Zanbing Dai and Joseph Feneuil). <em>Revista Matematica Iberoamericana</em>, (2023).</li>
       </ul>
     </div>
 
     <div class="pub-year-section">
       <h2>2022</h2>
       <ul class="pub-list">
-        <li>Non-local distance functions and geometric regularity (with Max Engelstein and Cole Jeznach).<span class="status-badge">submitted</span></li>
-        <li>The landscape law for tight binding Hamiltonians (with Douglas Arnold, Marcel Filoche, Wei Wang, Shiwen Zhang). <em>Communications in Mathematical Physics</em>, (2022).</li>
-        <li>Carleson estimates for the Green function on domains with lower dimensional boundaries (with Guy David and Linhan Li). <em>Journal of Functional Analysis</em>, 283 (5), 109553 (2022).</li>
-        <li>Spectral functions and localization landscape theory in speckle potentials (with P. Pelletier, D. Delande, V. Josse, A. Aspect, D. Arnold, M. Filoche). <em>Phys Rev A</em>, 105, 023314 (2022).</li>
-        <li>Approximation of Green functions and domains with uniformly rectifiable boundaries of all dimensions (with Guy David). <em>Advances in Math</em>, 410 (2022).</li>
-        <li>Harmonic measure is absolutely continuous with respect to the Hausdorff measure on all low-dimensional uniformly rectifiable sets (with Guy David). <em>International Mathematics Research Notices</em>, (2022).</li>
-        <li>Wigner-Weyl description of light absorption in disordered semiconductor alloys using the localization landscape theory (with Jean-Philippe Banon, Pierre Pelletier, Claude Weisbuch, Marcel Filoche). <em>Phys. Rev. B</em>, 105, 125422 (2022).</li>
-        <li>Green function estimates on complements of low-dimensional uniformly rectifiable sets (with Guy David and Joseph Feneuil). <em>Math. Ann.</em> (2022).</li>
-        <li>L<sup>p</sup> theory for the square roots and square functions of elliptic operators having a BMO anti-symmetric part (with Steve Hofmann, Linhan Li, and Jill Pipher). <em>Math. Z.</em> 301, 935&#8211;976 (2022).</li>
-        <li>Carleson measure estimates for the Green function (with Guy David and Linhan Li). <em>Archive for Rational Mechanics and Analysis</em>, 243, 1525&#8211;1563 (2022).</li>
+        <li><a href="https://arxiv.org/pdf/2208.07342.pdf" target="_blank" rel="noopener noreferrer">Non-local distance functions and geometric regularity</a> (with Max Engelstein and Cole Jeznach).<span class="status-badge">submitted</span></li>
+        <li><a href="https://arxiv.org/pdf/2101.03282.pdf" target="_blank" rel="noopener noreferrer">The landscape law for tight binding Hamiltonians</a> (with Douglas Arnold, Marcel Filoche, Wei Wang, Shiwen Zhang). <em>Communications in Mathematical Physics</em>, (2022).</li>
+        <li><a href="https://arxiv.org/pdf/2107.08101.pdf" target="_blank" rel="noopener noreferrer">Carleson estimates for the Green function on domains with lower dimensional boundaries</a> (with Guy David and Linhan Li). <em>Journal of Functional Analysis</em>, 283 (5), 109553 (2022).</li>
+        <li><a href="https://arxiv.org/pdf/2111.13155.pdf" target="_blank" rel="noopener noreferrer">Spectral functions and localization landscape theory in speckle potentials</a> (with P. Pelletier, D. Delande, V. Josse, A. Aspect, D. Arnold, M. Filoche). <em>Phys Rev A</em>, 105, 023314 (2022).</li>
+        <li><a href="https://arxiv.org/pdf/2010.09793.pdf" target="_blank" rel="noopener noreferrer">Approximation of Green functions and domains with uniformly rectifiable boundaries of all dimensions</a> (with Guy David). <em>Advances in Math</em>, 410 (2022).</li>
+        <li><a href="https://arxiv.org/pdf/2006.14661.pdf" target="_blank" rel="noopener noreferrer">Harmonic measure is absolutely continuous with respect to the Hausdorff measure on all low-dimensional uniformly rectifiable sets</a> (with Guy David). <em>International Mathematics Research Notices</em>, (2022).</li>
+        <li><a href="https://arxiv.org/pdf/2112.06485.pdf" target="_blank" rel="noopener noreferrer">Wigner-Weyl description of light absorption in disordered semiconductor alloys using the localization landscape theory</a> (with Jean-Philippe Banon, Pierre Pelletier, Claude Weisbuch, Marcel Filoche). <em>Phys. Rev. B</em>, 105, 125422 (2022).</li>
+        <li><a href="https://arxiv.org/pdf/2101.11646.pdf" target="_blank" rel="noopener noreferrer">Green function estimates on complements of low-dimensional uniformly rectifiable sets</a> (with Guy David and Joseph Feneuil). <em>Math. Ann.</em> (2022).</li>
+        <li><a href="https://arxiv.org/pdf/1908.01030.pdf" target="_blank" rel="noopener noreferrer">L<sup>p</sup> theory for the square roots and square functions of elliptic operators having a BMO anti-symmetric part</a> (with Steve Hofmann, Linhan Li, and Jill Pipher). <em>Math. Z.</em> 301, 935&#8211;976 (2022).</li>
+        <li><a href="https://arxiv.org/pdf/2102.09592.pdf" target="_blank" rel="noopener noreferrer">Carleson measure estimates for the Green function</a> (with Guy David and Linhan Li). <em>Archive for Rational Mechanics and Analysis</em>, 243, 1525&#8211;1563 (2022).</li>
       </ul>
     </div>
 
     <div class="pub-year-section">
       <h2>2021</h2>
       <ul class="pub-list">
-        <li>Critical Perturbations for Second Order Elliptic Operators. Part I: Square function bounds for layer potentials (with Simon Bortz, Steve Hofmann, Jose Luis Luna Garcia, and Bruno Poggi). <em>Analysis &amp; PDE</em>, accepted.</li>
-        <li>The landscape law for the integrated density of states (with Guy David and Marcel Filoche). <em>Advances in Mathematics</em>, 390, (2021).</li>
-        <li>Sharp estimates for the integrated density of states in Anderson tight-binding models (with P. Desforges, S. Zhang, G. David, D. Arnold, W. Wang, M. Filoche). <em>Phys. Rev. A</em>, 104, 012207 (2021).</li>
-        <li>The Dirichlet problem for elliptic operators having a BMO anti-symmetric part (with Steve Hofmann, Linhan Li, and Jill Pipher). <em>Math. Ann.</em>, (2021).</li>
-        <li>Uniform rectifiability and elliptic operators satisfying a Carleson measure condition (with Steve Hofmann, Jose Maria Martell, Tatiana Toro, and Zihui Zhao). <em>Geom. Funct. Anal.</em> 31, 325&#8211;401 (2021).</li>
-        <li>Good elliptic operators on Cantor sets (with Guy David). <em>Advances in Mathematics</em>, 383, (2021).</li>
-        <li>The effective potential of an M-matrix (with Marcel Filoche and Terence Tao). <em>Journal of Mathematical Physics</em>, 62, 041902 (2021).</li>
-        <li>Carleson perturbations of elliptic operators on domains with low dimensional boundaries (with Bruno Poggi). <em>Journal of Functional Analysis</em>, 280, Issue 8 (2021).</li>
-        <li>Dirichlet problem in domains with lower dimensional boundaries (with Joseph Feneuil and Zihui Zhao). <em>Revista Matematica Iberoamericana</em>, 37, 3, 821&#8211;910 (2021).</li>
-        <li>Square functions, non-tangential limits and harmonic measure in co-dimensions larger than one (with Guy David and Max Engelstein). <em>Duke Math. J.</em>, 170 (3), 455&#8211;501 (2021).</li>
+        <li><a href="https://arxiv.org/pdf/2003.02703.pdf" target="_blank" rel="noopener noreferrer">Critical Perturbations for Second Order Elliptic Operators. Part I: Square function bounds for layer potentials</a> (with Simon Bortz, Steve Hofmann, Jose Luis Luna Garcia, and Bruno Poggi). <em>Analysis &amp; PDE</em>, accepted.</li>
+        <li><a href="https://arxiv.org/pdf/1909.10558.pdf" target="_blank" rel="noopener noreferrer">The landscape law for the integrated density of states</a> (with Guy David and Marcel Filoche). <em>Advances in Mathematics</em>, 390, (2021).</li>
+        <li><a href="https://journals.aps.org/pra/abstract/10.1103/PhysRevA.104.012207" target="_blank" rel="noopener noreferrer">Sharp estimates for the integrated density of states in Anderson tight-binding models</a> (with P. Desforges, S. Zhang, G. David, D. Arnold, W. Wang, M. Filoche). <em>Phys. Rev. A</em>, 104, 012207 (2021).</li>
+        <li><a href="https://arxiv.org/pdf/1908.08587.pdf" target="_blank" rel="noopener noreferrer">The Dirichlet problem for elliptic operators having a BMO anti-symmetric part</a> (with Steve Hofmann, Linhan Li, and Jill Pipher). <em>Math. Ann.</em>, (2021).</li>
+        <li><a href="https://arxiv.org/pdf/2008.04834.pdf" target="_blank" rel="noopener noreferrer">Uniform rectifiability and elliptic operators satisfying a Carleson measure condition</a> (with Steve Hofmann, Jose Maria Martell, Tatiana Toro, and Zihui Zhao). <em>Geom. Funct. Anal.</em> 31, 325&#8211;401 (2021).</li>
+        <li><a href="https://arxiv.org/pdf/2007.01745.pdf" target="_blank" rel="noopener noreferrer">Good elliptic operators on Cantor sets</a> (with Guy David). <em>Advances in Mathematics</em>, 383, (2021).</li>
+        <li><a href="https://aip.scitation.org/doi/10.1063/5.0042629" target="_blank" rel="noopener noreferrer">The effective potential of an M-matrix</a> (with Marcel Filoche and Terence Tao). <em>Journal of Mathematical Physics</em>, 62, 041902 (2021).</li>
+        <li><a href="https://arxiv.org/pdf/2007.07492.pdf" target="_blank" rel="noopener noreferrer">Carleson perturbations of elliptic operators on domains with low dimensional boundaries</a> (with Bruno Poggi). <em>Journal of Functional Analysis</em>, 280, Issue 8 (2021).</li>
+        <li><a href="https://arxiv.org/pdf/1810.06805.pdf" target="_blank" rel="noopener noreferrer">Dirichlet problem in domains with lower dimensional boundaries</a> (with Joseph Feneuil and Zihui Zhao). <em>Revista Matematica Iberoamericana</em>, 37, 3, 821&#8211;910 (2021).</li>
+        <li><a href="https://arxiv.org/pdf/1808.08882.pdf" target="_blank" rel="noopener noreferrer">Square functions, non-tangential limits and harmonic measure in co-dimensions larger than one</a> (with Guy David and Max Engelstein). <em>Duke Math. J.</em>, 170 (3), 455&#8211;501 (2021).</li>
       </ul>
     </div>
 
     <div class="pub-year-section">
       <h2>2020</h2>
       <ul class="pub-list">
-        <li>Reply to comment by Comtet and Texier on &#8220;The effective confining potential of quantum states in disordered media&#8221; (with Doug Arnold, Guy David, Marcel Filoche, and David Jerison). <em>Physical Review Letters</em>, 124, 219802 (2020).</li>
-        <li>Nontangential estimates on layer potentials and the Neumann problem for higher order elliptic equations (with Ariel Barton and Steve Hofmann). <em>International Mathematics Research Notices</em>, (2020).</li>
+        <li><a href="https://www-users.cse.umn.edu/~svitlana/reply_PRL-6.pdf" target="_blank" rel="noopener noreferrer">Reply to comment by Comtet and Texier on &#8220;The effective confining potential of quantum states in disordered media&#8221;</a> (with Doug Arnold, Guy David, Marcel Filoche, and David Jerison). <em>Physical Review Letters</em>, 124, 219802 (2020).</li>
+        <li><a href="https://arxiv.org/pdf/1808.07137.pdf" target="_blank" rel="noopener noreferrer">Nontangential estimates on layer potentials and the Neumann problem for higher order elliptic equations</a> (with Ariel Barton and Steve Hofmann). <em>International Mathematics Research Notices</em>, (2020).</li>
       </ul>
     </div>
 
     <div class="pub-year-section">
       <h2>2019</h2>
       <ul class="pub-list">
-        <li>Uniform rectifiability and elliptic operators satisfying a Carleson measure condition. Part I: The small constant case (with Steve Hofmann, Jose Maria Martell, Tatiana Toro, Zihui Zhao).<span class="status-badge">submitted</span></li>
-        <li>Universality of fold-encoded localized vibrations in enzymes (with Yann Chalopin, Francesco Piazza, Claude Weisbuch, and Marcel Filoche). <em>Scientific Reports</em>, Volume 9, Number 1 (2019).</li>
-        <li>Bounds on layer potentials with rough inputs for higher order elliptic equations (with Ariel Barton and Steve Hofmann). <em>Proceedings of the London Mathematical Society</em>, 3, 119, 613&#8211;653 (2019).</li>
-        <li>Dahlberg&#8217;s theorem in higher co-dimension (with Guy David and Joseph Feneuil). <em>Journal of Functional Analysis</em>, 276, Number 9 (2019).</li>
-        <li>Exponential decay estimates for fundamental solutions of Schr&#246;dinger-type operators (with Bruno Poggi). <em>Transactions of the AMS</em>, Volume 372, Number 6 (2019).</li>
-        <li>Dirichlet and Neumann boundary values of solutions to higher order elliptic equations (with Ariel Barton and Steve Hofmann). <em>Annales de l&#8217;Institut Fourier</em>, 69, Number 4 (2019).</li>
-        <li>Square function estimates, BMO Dirichlet problem, and absolute continuity of harmonic measure on lower-dimensional sets (with Zihui Zhao). <em>Analysis &amp; PDE</em>, 12, Number 7 (2019).</li>
-        <li>A new elliptic measure on lower dimensional sets (with Guy David and Joseph Feneuil). <em>Acta Mathematica Sinica</em>, special issue in honor of the 65th birthday of Professor Carlos Kenig, 35 (2019).</li>
-        <li>Localization of eigenfunctions via an effective potential (with Douglas Arnold, Guy David, Marcel Filoche, David Jerison). <em>Communications in Partial Differential Equations</em>, 44, Number 11 (2019).</li>
-        <li>Computing spectra without solving eigenvalue problems (with Douglas Arnold, Guy David, Marcel Filoche, David Jerison). <em>SIAM Journal on Scientific Computing</em>, 41, Number 1 (2019).</li>
+        <li><a href="https://arxiv.org/pdf/1710.06157.pdf" target="_blank" rel="noopener noreferrer">Uniform rectifiability and elliptic operators satisfying a Carleson measure condition. Part I: The small constant case</a> (with Steve Hofmann, Jose Maria Martell, Tatiana Toro, Zihui Zhao).<span class="status-badge">submitted</span></li>
+        <li><a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6731342/" target="_blank" rel="noopener noreferrer">Universality of fold-encoded localized vibrations in enzymes</a> (with Yann Chalopin, Francesco Piazza, Claude Weisbuch, and Marcel Filoche). <em>Scientific Reports</em>, Volume 9, Number 1 (2019).</li>
+        <li><a href="http://www-users.math.umn.edu/~svitlana/Rellich-potentials.pdf" target="_blank" rel="noopener noreferrer">Bounds on layer potentials with rough inputs for higher order elliptic equations</a> (with Ariel Barton and Steve Hofmann). <em>Proceedings of the London Mathematical Society</em>, 3, 119, 613&#8211;653 (2019).</li>
+        <li><a href="https://arxiv.org/pdf/1704.00667.pdf" target="_blank" rel="noopener noreferrer">Dahlberg&#8217;s theorem in higher co-dimension</a> (with Guy David and Joseph Feneuil). <em>Journal of Functional Analysis</em>, 276, Number 9 (2019).</li>
+        <li><a href="https://arxiv.org/pdf/1801.05499.pdf" target="_blank" rel="noopener noreferrer">Exponential decay estimates for fundamental solutions of Schr&#246;dinger-type operators</a> (with Bruno Poggi). <em>Transactions of the AMS</em>, Volume 372, Number 6 (2019).</li>
+        <li><a href="http://www-users.math.umn.edu/~svitlana/Rellich-traces.pdf" target="_blank" rel="noopener noreferrer">Dirichlet and Neumann boundary values of solutions to higher order elliptic equations</a> (with Ariel Barton and Steve Hofmann). <em>Annales de l&#8217;Institut Fourier</em>, 69, Number 4 (2019).</li>
+        <li><a href="https://arxiv.org/pdf/1802.09648.pdf" target="_blank" rel="noopener noreferrer">Square function estimates, BMO Dirichlet problem, and absolute continuity of harmonic measure on lower-dimensional sets</a> (with Zihui Zhao). <em>Analysis &amp; PDE</em>, 12, Number 7 (2019).</li>
+        <li><a href="https://arxiv.org/pdf/1807.07035.pdf" target="_blank" rel="noopener noreferrer">A new elliptic measure on lower dimensional sets</a> (with Guy David and Joseph Feneuil). <em>Acta Mathematica Sinica</em>, special issue in honor of the 65th birthday of Professor Carlos Kenig, 35 (2019).</li>
+        <li><a href="https://arxiv.org/pdf/1712.02419.pdf" target="_blank" rel="noopener noreferrer">Localization of eigenfunctions via an effective potential</a> (with Douglas Arnold, Guy David, Marcel Filoche, David Jerison). <em>Communications in Partial Differential Equations</em>, 44, Number 11 (2019).</li>
+        <li><a href="https://arxiv.org/pdf/1711.04888.pdf" target="_blank" rel="noopener noreferrer">Computing spectra without solving eigenvalue problems</a> (with Douglas Arnold, Guy David, Marcel Filoche, David Jerison). <em>SIAM Journal on Scientific Computing</em>, 41, Number 1 (2019).</li>
       </ul>
     </div>
 
     <div class="pub-year-section">
       <h2>2018</h2>
       <ul class="pub-list">
-        <li>Elliptic theory for sets with higher co-dimensional boundaries (with Guy David and Joseph Feneuil). <em>Memoirs of the AMS</em>, accepted.</li>
-        <li>The effect of disorder and irregularities on solutions to boundary value problems and spectra of differential operators. <em>Proceedings of the ICM &#8211; Rio de Janeiro 2018</em>, Vol. III, Invited lectures, 1691&#8211;1712 (2018).</li>
-        <li>Polyharmonic capacity and Wiener test of higher order (with Vladimir Maz&#8217;ya). <em>Inventiones Mathematicae</em>, (2018) 211: 779.</li>
-        <li>Fundamental Matrices and Green Matrices for non-homogeneous elliptic systems (with Blair Davey and Jonathan Hill). <em>Publicacions Matematiques</em>, Volume 62, Number 2 (2018), 537&#8211;614.</li>
-        <li>The Neumann problem for higher order elliptic equations with symmetric coefficients (with Ariel Barton and Steve Hofmann). <em>Math. Ann.</em>, (2018) 371: 297.</li>
+        <li><a href="https://arxiv.org/pdf/1702.05503.pdf" target="_blank" rel="noopener noreferrer">Elliptic theory for sets with higher co-dimensional boundaries</a> (with Guy David and Joseph Feneuil). <em>Memoirs of the AMS</em>, accepted.</li>
+        <li><a href="https://www.worldscientific.com/doi/pdf/10.1142/9789813272880_0113" target="_blank" rel="noopener noreferrer">The effect of disorder and irregularities on solutions to boundary value problems and spectra of differential operators</a>. <em>Proceedings of the ICM &#8211; Rio de Janeiro 2018</em>, Vol. III, Invited lectures, 1691&#8211;1712 (2018).</li>
+        <li><a href="http://www-users.math.umn.edu/~svitlana/Polyharm30.pdf" target="_blank" rel="noopener noreferrer">Polyharmonic capacity and Wiener test of higher order</a> (with Vladimir Maz&#8217;ya). <em>Inventiones Mathematicae</em>, (2018) 211: 779.</li>
+        <li><a href="http://www-users.math.umn.edu/~svitlana/FundamentalGreenMatrices.pdf" target="_blank" rel="noopener noreferrer">Fundamental Matrices and Green Matrices for non-homogeneous elliptic systems</a> (with Blair Davey and Jonathan Hill). <em>Publicacions Matematiques</em>, Volume 62, Number 2 (2018), 537&#8211;614.</li>
+        <li><a href="http://www-users.math.umn.edu/~svitlana/Rellich-Neumann.pdf" target="_blank" rel="noopener noreferrer">The Neumann problem for higher order elliptic equations with symmetric coefficients</a> (with Ariel Barton and Steve Hofmann). <em>Math. Ann.</em>, (2018) 371: 297.</li>
       </ul>
     </div>
 
     <div class="pub-year-section">
       <h2>2017</h2>
       <ul class="pub-list">
-        <li>Localization landscape theory of disorder in semiconductors III: Application to carrier transport and recombination in light emitting diodes (with Chi-Kang Li et al.). <em>Phys. Rev. B</em>, 95, 144206 (2017).</li>
-        <li>Localization landscape theory of disorder in semiconductors I: Theory and modeling (with Marcel Filoche, Marco Piccardo, Yuh-Renn Wu, Chi-Kang Li, Claude Weisbuch). <em>Phys. Rev. B</em>, 95, 144204 (2017).</li>
-        <li>A free boundary problem for the localization of eigenfunctions (with Guy David, Marcel Filoche, David Jerison). <em>Asterisque</em>, 392 (2017), 203 pages.</li>
-        <li>Square function estimates on layer potentials for higher-order elliptic equations (with Ariel Barton and Steve Hofmann). <em>Mathematische Nachrichten</em>, 290: 2459&#8211;2511.</li>
-        <li>Local Hardy spaces associated with inhomogeneous higher order elliptic operators (with Dachun Yang and Jun Cao). <em>Anal. Appl. (Singap.)</em> 15 (2017), no. 2, 137&#8211;224.</li>
-        <li>Localization of eigenfunctions. <em>Notices of the AMS</em>, (2017).</li>
+        <li><a href="https://arxiv.org/pdf/1704.05533.pdf" target="_blank" rel="noopener noreferrer">Localization landscape theory of disorder in semiconductors III: Application to carrier transport and recombination in light emitting diodes</a> (with Chi-Kang Li, Marco Piccardo, Li-Shuo Lu, Lucio Martinelli, Jacques Peretti, James S. Speck, Claude Weisbuch, Marcel Filoche, Yuh-Renn Wu). <em>Phys. Rev. B</em>, 95, 144206 (2017).</li>
+        <li><a href="https://arxiv.org/pdf/1704.05512.pdf" target="_blank" rel="noopener noreferrer">Localization landscape theory of disorder in semiconductors I: Theory and modeling</a> (with Marcel Filoche, Marco Piccardo, Yuh-Renn Wu, Chi-Kang Li, Claude Weisbuch). <em>Phys. Rev. B</em>, 95, 144204 (2017).</li>
+        <li><a href="https://arxiv.org/pdf/1406.6596.pdf" target="_blank" rel="noopener noreferrer">A free boundary problem for the localization of eigenfunctions</a> (with Guy David, Marcel Filoche, David Jerison). <em>Asterisque</em>, 392 (2017), 203 pages.</li>
+        <li><a href="http://www-users.math.umn.edu/~svitlana/barton-hofmann-mayboroda.pdf" target="_blank" rel="noopener noreferrer">Square function estimates on layer potentials for higher-order elliptic equations</a> (with Ariel Barton and Steve Hofmann). <em>Mathematische Nachrichten</em>, 290: 2459&#8211;2511.</li>
+        <li><a href="http://www-users.math.umn.edu/~svitlana/CMY%282014-ihoeo%29.pdf" target="_blank" rel="noopener noreferrer">Local Hardy spaces associated with inhomogeneous higher order elliptic operators</a> (with Dachun Yang and Jun Cao). <em>Anal. Appl. (Singap.)</em> 15 (2017), no. 2, 137&#8211;224.</li>
+        <li><a href="http://www-users.math.umn.edu/~svitlana/Notices2017-5.pdf" target="_blank" rel="noopener noreferrer">Localization of eigenfunctions</a>. <em>Notices of the AMS</em>, (2017).</li>
       </ul>
     </div>
 
     <div class="pub-year-section">
       <h2>2016</h2>
       <ul class="pub-list">
-        <li>Absolute continuity between the surface measure and harmonic measure implies rectifiability (with Steve Hofmann, Jose Maria Martell, Xavier Tolsa and Alexander Volberg).<span class="status-badge">submitted</span></li>
-        <li>One single static measurement predicts wave localization in complex structures (with Gautier Lefebvre et al.). <em>Physical Review Letters</em>, 117, 074301 (2016).</li>
-        <li>Higher-order elliptic equations in non-smooth domains: some old and new results (with Ariel Barton). <em>Harmonic Analysis, PDE, Complex Analysis, Banach Spaces, and Operator Theory</em>, Volume 1.</li>
-        <li>Rectifiability of harmonic measure (with Jonas Azzam, Steve Hofmann, Jose Maria Martell, Mihalis Mourgoglou, Xavier Tolsa, and Alexander Volberg). <em>Geom. Funct. Anal.</em> 26 (2016), no. 3, 703&#8211;728.</li>
-        <li>Harmonic measure is rectifiable if it is absolutely continuous with respect to the co-dimension one Hausdorff measure (with Jonas Azzam et al.). <em>C. R. Math. Acad. Sci. Paris</em> 354 (2016), no. 4, 351&#8211;355.</li>
-        <li>The effective confining potential of quantum states in disordered media (with Doug Arnold, Guy David, Marcel Filoche, and David Jerison). <em>Physical Review Letters</em>, 116 (2016), 056602.</li>
-        <li>Layer potentials and boundary-value problems for second order elliptic operators with data in Besov spaces (with Ariel Barton). <em>Mem. Amer. Math. Soc.</em> 243 (2016), no. 1149, v+110 pp.</li>
-        <li>Uniform Rectifiability, Carleson measure estimates, and approximation of harmonic functions (with Steve Hofmann and Jose Maria Martell). <em>Duke Math. J.</em> 165 (2016), no. 12, 2331&#8211;2389.</li>
-        <li>Maximal function characterizations of Hardy spaces associated to homogeneous higher order elliptic operators (with Dachun Yang and Jun Cao). <em>Forum Math.</em> 28 (2016), no. 5, 823&#8211;856.</li>
+        <li><a href="https://arxiv.org/pdf/1507.04409.pdf" target="_blank" rel="noopener noreferrer">Absolute continuity between the surface measure and harmonic measure implies rectifiability</a> (with Steve Hofmann, Jose Maria Martell, Xavier Tolsa and Alexander Volberg).<span class="status-badge">submitted</span></li>
+        <li><a href="http://www-users.math.umn.edu/~svitlana/PRL_2016-07-17.pdf" target="_blank" rel="noopener noreferrer">One single static measurement predicts wave localization in complex structures</a> (with Gautier Lefebvre, Alexane Gondel, Marc Dubois, Michael Atlan, Florian Feppon, Aim&#233; Labb&#233;, Camille Gillot, Alix Garelli, Maxence Ernoult, Marcel Filoche, Patrick Sebbah). <em>Physical Review Letters</em>, 117, 074301 (2016).</li>
+        <li><a href="http://www-users.math.umn.edu/~svitlana/history2015-SM.pdf" target="_blank" rel="noopener noreferrer">Higher-order elliptic equations in non-smooth domains: some old and new results</a> (with Ariel Barton). <em>Harmonic Analysis, PDE, Complex Analysis, Banach Spaces, and Operator Theory. Celebrating Cora Sadosky&#8217;s life.</em> Volume 1.</li>
+        <li><a href="http://www-users.math.umn.edu/~svitlana/ahm3tv-final.pdf" target="_blank" rel="noopener noreferrer">Rectifiability of harmonic measure</a> (with Jonas Azzam, Steve Hofmann, Jose Maria Martell, Mihalis Mourgoglou, Xavier Tolsa, and Alexander Volberg). <em>Geom. Funct. Anal.</em> 26 (2016), no. 3, 703&#8211;728.</li>
+        <li><a href="http://www-users.math.umn.edu/~svitlana/Short_ahm3tv2015_9_18.pdf" target="_blank" rel="noopener noreferrer">Harmonic measure is rectifiable if it is absolutely continuous with respect to the co-dimension one Hausdorff measure</a> (with Jonas Azzam, Steve Hofmann, Jose Maria Martell, Mihalis Mourgoglou, Xavier Tolsa, and Alexander Volberg). <em>C. R. Math. Acad. Sci. Paris</em> 354 (2016), no. 4, 351&#8211;355.</li>
+        <li><a href="http://www-users.math.umn.edu/~svitlana/PRL2016.pdf" target="_blank" rel="noopener noreferrer">The effective confining potential of quantum states in disordered media</a> (with Doug Arnold, Guy David, Marcel Filoche, and David Jerison). <em>Physical Review Letters</em>, 116 (2016), 056602.</li>
+        <li><a href="http://www-users.math.umn.edu/~svitlana/barton-mayboroda-besov.pdf" target="_blank" rel="noopener noreferrer">Layer potentials and boundary-value problems for second order elliptic operators with data in Besov spaces</a> (with Ariel Barton). <em>Mem. Amer. Math. Soc.</em> 243 (2016), no. 1149, v+110 pp.</li>
+        <li><a href="http://www-users.math.umn.edu/~svitlana/HofmannMartellMayboroda.pdf" target="_blank" rel="noopener noreferrer">Uniform Rectifiability, Carleson measure estimates, and approximation of harmonic functions</a> (with Steve Hofmann and Jose Maria Martell). <em>Duke Math. J.</em> 165 (2016), no. 12, 2331&#8211;2389.</li>
+        <li><a href="http://www-users.math.umn.edu/~svitlana/cmy%282014-hhs%29.pdf" target="_blank" rel="noopener noreferrer">Maximal function characterizations of Hardy spaces associated to homogeneous higher order elliptic operators</a> (with Dachun Yang and Jun Cao). <em>Forum Math.</em> 28 (2016), no. 5, 823&#8211;856.</li>
       </ul>
     </div>
 
     <div class="pub-year-section">
       <h2>2015</h2>
       <ul class="pub-list">
-        <li>Layer potentials and boundary value problems for elliptic equations with complex bounded coefficients satisfying the small Carleson measure norm condition (with Steve Hofmann and Mihalis Mourgoglou). <em>Advances in Mathematics</em>, 480&#8211;564.</li>
-        <li>Dual hidden landscapes for Anderson localization in discrete lattices (with Marcel Filoche, Marcelo Lyra). <em>Europhys. Lett. EPL</em>, Volume 109, Number 4, Editor&#8217;s choice.</li>
-        <li>The regularity problem for second order elliptic operators with complex-valued bounded measurable coefficients (with Steve Hofmann, Carlos Kenig, and Jill Pipher). <em>Mathematische Annalen</em>, 361 (2015), no. 3&#8209;4, 863&#8211;907.</li>
-        <li>Square function / non-tangential maximal function estimates and the Dirichlet problem for non-symmetric elliptic operators (with Steve Hofmann, Carlos Kenig, and Jill Pipher). <em>Journal of the American Mathematical Society</em>, 28 (2015), no. 2, 483&#8211;529.</li>
+        <li><a href="http://www-users.math.umn.edu/~svitlana/HofmannMayborodaMourgoglou.pdf" target="_blank" rel="noopener noreferrer">Layer potentials and boundary value problems for elliptic equations with complex bounded coefficients satisfying the small Carleson measure norm condition</a> (with Steve Hofmann and Mihalis Mourgoglou). <em>Advances in Mathematics</em>, 480&#8211;564.</li>
+        <li><a href="https://arxiv.org/pdf/1410.2229.pdf" target="_blank" rel="noopener noreferrer">Dual hidden landscapes for Anderson localization in discrete lattices</a> (with Marcel Filoche, Marcelo Lyra). <em>Europhys. Lett. EPL</em>, Volume 109, Number 4, Editor&#8217;s choice.</li>
+        <li><a href="https://arxiv.org/pdf/1301.5209.pdf" target="_blank" rel="noopener noreferrer">The regularity problem for second order elliptic operators with complex-valued bounded measurable coefficients</a> (with Steve Hofmann, Carlos Kenig, and Jill Pipher). <em>Mathematische Annalen</em>, 361 (2015), no. 3&#8209;4, 863&#8211;907.</li>
+        <li><a href="http://www-users.math.umn.edu/~svitlana/nonsymmetric9.pdf" target="_blank" rel="noopener noreferrer">Square function / non-tangential maximal function estimates and the Dirichlet problem for non-symmetric elliptic operators</a> (with Steve Hofmann, Carlos Kenig, and Jill Pipher). <em>Journal of the American Mathematical Society</em>, 28 (2015), no. 2, 483&#8211;529.</li>
       </ul>
     </div>
 
     <div class="pub-year-section">
       <h2>2014</h2>
       <ul class="pub-list">
-        <li>Regularity of solutions to the polyharmonic equation in general domains (with Vladimir Maz&#8217;ya). <em>Inventiones Mathematicae</em>, 196 (2014), no. 1, 1&#8211;68.</li>
-        <li>Uniform Rectifiability and Harmonic Measure III: Riesz transform bounds imply uniform rectifiability of boundaries of 1-sided NTA domains (with Steve Hofmann and Jose Maria Martell). <em>International Mathematics Research Notices</em>, 2014, no. 10, 2702&#8211;2729.</li>
-        <li>Boundary-value problems for higher-order elliptic equations in non-smooth domains (with Ariel Barton). <em>Oper. Theory Adv. Appl.</em>, 236, Birkh&#228;user Springer, Basel, 2014.</li>
+        <li><a href="http://www-users.math.umn.edu/~svitlana/PolyharmNC8.pdf" target="_blank" rel="noopener noreferrer">Regularity of solutions to the polyharmonic equation in general domains</a> (with Vladimir Maz&#8217;ya). <em>Inventiones Mathematicae</em>, 196 (2014), no. 1, 1&#8211;68.</li>
+        <li><a href="http://www-users.math.umn.edu/~svitlana/HMM-UR-Riesz.pdf" target="_blank" rel="noopener noreferrer">Uniform Rectifiability and Harmonic Measure III: Riesz transform bounds imply uniform rectifiability of boundaries of 1-sided NTA domains</a> (with Steve Hofmann and Jose Maria Martell). <em>International Mathematics Research Notices</em>, 2014, no. 10, 2702&#8211;2729.</li>
+        <li><a href="http://www-users.math.umn.edu/~svitlana/HistoryWithComposition-Corrections.pdf" target="_blank" rel="noopener noreferrer">Boundary-value problems for higher-order elliptic equations in non-smooth domains</a> (with Ariel Barton). <em>Oper. Theory Adv. Appl.</em>, 236, Birkh&#228;user Springer, Basel, 2014.</li>
       </ul>
     </div>
 
     <div class="pub-year-section">
       <h2>2013 and Earlier</h2>
       <ul class="pub-list">
-        <li>The Dirichlet problem for higher order equations in composition form (with Ariel Barton). <em>Journal of Functional Analysis</em>, Volume 265, Issue 1, (2013), 49&#8211;107.</li>
-        <li>The landscape of Anderson localization in a disordered medium (with Marcel Filoche). <em>Contemporary Mathematics</em>, 601 (2013), 113&#8211;121.</li>
-        <li>Universal mechanism for Anderson and weak localization (with Marcel Filoche). <em>Proceedings of the National Academy of Sciences</em>, (2012), 109 (37) 14761&#8211;14766.</li>
-        <li>Localization of eigenfunctions of a one-dimensional elliptic operator (with Marcel Filoche and Brandon Patterson). <em>Contemporary Mathematics</em>, 581 (2012), 99&#8211;116.</li>
-        <li>Second order elliptic operators with complex bounded measurable coefficients in L<sup>p</sup>, Sobolev and Hardy spaces (with Steve Hofmann and Alan McIntosh). <em>Les Annales Scientifiques de l&#8217;&#201;cole Normale Sup&#233;rieure</em>, Volume 44, fascicule 5 (2011), 723&#8211;800.</li>
-        <li>The connections between Dirichlet, Regularity and Neumann problems for second order elliptic operators with complex bounded measurable coefficients. <em>Advances in Mathematics</em>, 225 (2010), 1786&#8211;1819.</li>
-        <li>Boundedness of the gradient of a solution and Wiener test of order one for the biharmonic equation (with Vladimir Maz&#8217;ya). <em>Inventiones Mathematicae</em>, 175 (2009), no. 2, 287&#8211;334.</li>
-        <li>Strong localization induced by one clamped point in thin plate vibrations (with Marcel Filoche). <em>Physical Review Letters</em>, Volume 103, Issue 25, Article 254301, (2009).</li>
-        <li>Finite square function implies integer dimension (with Alexander Volberg). <em>C. R. Math. Acad. Sci. Paris</em>, 347 (2009), pp. 1271&#8211;1276.</li>
-        <li>Hardy and BMO spaces associated to divergence form elliptic operators (with Steve Hofmann). <em>Mathematische Annalen</em>, 344 (2009), no. 1, 37&#8211;116.</li>
-        <li>Boundedness of the square function and rectifiability (with Alexander Volberg). <em>C. R. Math. Acad. Sci. Paris</em>, 347 (2009), pp. 1051&#8211;1056.</li>
-        <li>Boundedness of the Hessian of a biharmonic function in a convex domain (with Vladimir Maz&#8217;ya). <em>Comm. Partial Differential Equations</em> 33 (2008), no. 7&#8209;9, 1439&#8211;1454.</li>
-        <li>Layer potentials and boundary value problems for Laplacian in Lipschitz domains with data in quasi-Banach Besov spaces (with Marius Mitrea). <em>Annali di Matematica Pura ed Applicata</em> (4) 185 (2006), no. 2, 155&#8211;187.</li>
-        <li>Sharp estimates for Green potentials on non-smooth domains (with Marius Mitrea). <em>Mathematical Research Letters</em>, 11 (2004), 481&#8211;492.</li>
-        <li>Square-function estimates for singular integrals and applications to partial differential equations (with Marius Mitrea). <em>Differential Integral Equations</em>, 17 (2004), no. 7&#8209;8, 873&#8211;892.</li>
+        <li><a href="http://www-users.math.umn.edu/~svitlana/barton-mayboroda.pdf" target="_blank" rel="noopener noreferrer">The Dirichlet problem for higher order equations in composition form</a> (with Ariel Barton). <em>Journal of Functional Analysis</em>, Volume 265, Issue 1, (2013), 49&#8211;107.</li>
+        <li><a href="http://www-users.math.umn.edu/~svitlana/article-filoche_sub2.pdf" target="_blank" rel="noopener noreferrer">The landscape of Anderson localization in a disordered medium</a> (with Marcel Filoche). <em>Contemporary Mathematics</em>, 601 (2013), 113&#8211;121.</li>
+        <li><a href="http://www-users.math.umn.edu/~svitlana/PNAS-2012-Filoche-1120432109.pdf" target="_blank" rel="noopener noreferrer">Universal mechanism for Anderson and weak localization</a> (with Marcel Filoche). <em>Proceedings of the National Academy of Sciences</em>, (2012), 109 (37) 14761&#8211;14766.</li>
+        <li><a href="http://www-users.math.umn.edu/~svitlana/Vibrations-conm.pdf" target="_blank" rel="noopener noreferrer">Localization of eigenfunctions of a one-dimensional elliptic operator</a> (with Marcel Filoche and Brandon Patterson). <em>Contemporary Mathematics</em>, 581 (2012), 99&#8211;116.</li>
+        <li><a href="http://www-users.math.umn.edu/~svitlana/HRiesz32.pdf" target="_blank" rel="noopener noreferrer">Second order elliptic operators with complex bounded measurable coefficients in L<sup>p</sup>, Sobolev and Hardy spaces</a> (with Steve Hofmann and Alan McIntosh). <em>Les Annales Scientifiques de l&#8217;&#201;cole Normale Sup&#233;rieure</em>, Volume 44, fascicule 5 (2011), 723&#8211;800.</li>
+        <li><a href="http://www-users.math.umn.edu/~svitlana/RD9.pdf" target="_blank" rel="noopener noreferrer">The connections between Dirichlet, Regularity and Neumann problems for second order elliptic operators with complex bounded measurable coefficients</a>. <em>Advances in Mathematics</em>, 225 (2010), 1786&#8211;1819.</li>
+        <li><a href="http://www-users.math.umn.edu/~svitlana/MayborodaMazya_Revised.pdf" target="_blank" rel="noopener noreferrer">Boundedness of the gradient of a solution and Wiener test of order one for the biharmonic equation</a> (with Vladimir Maz&#8217;ya). <em>Inventiones Mathematicae</em>, 175 (2009), no. 2, 287&#8211;334.</li>
+        <li><a href="http://www-users.math.umn.edu/~svitlana/PRL2009.pdf" target="_blank" rel="noopener noreferrer">Strong localization induced by one clamped point in thin plate vibrations</a> (with Marcel Filoche). <em>Physical Review Letters</em>, Volume 103, Issue 25, Article 254301, (2009).</li>
+        <li><a href="http://www-users.math.umn.edu/~svitlana/FracDimSqF4_11_09_NoFr.pdf" target="_blank" rel="noopener noreferrer">Finite square function implies integer dimension</a> (with Alexander Volberg). <em>C. R. Math. Acad. Sci. Paris</em>, 347 (2009), pp. 1271&#8211;1276.</li>
+        <li><a href="http://www-users.math.umn.edu/~svitlana/hofmay3.pdf" target="_blank" rel="noopener noreferrer">Hardy and BMO spaces associated to divergence form elliptic operators</a> (with Steve Hofmann). <em>Mathematische Annalen</em>, 344 (2009), no. 1, 37&#8211;116.</li>
+        <li><a href="http://www-users.math.umn.edu/~svitlana/IntDimSqF4_29_09_NoFr.pdf" target="_blank" rel="noopener noreferrer">Boundedness of the square function and rectifiability</a> (with Alexander Volberg). <em>C. R. Math. Acad. Sci. Paris</em>, 347 (2009), pp. 1051&#8211;1056.</li>
+        <li><a href="http://www-users.math.umn.edu/~svitlana/PolyGrF5.pdf" target="_blank" rel="noopener noreferrer">Pointwise estimates for the polyharmonic Green function in general domains</a> (with Vladimir Maz&#8217;ya). <em>Operator Theory: Advances and Applications</em> 193, 143&#8211;158 (2009).</li>
+        <li><a href="http://www-users.math.umn.edu/~svitlana/MayborodaMazya2.pdf" target="_blank" rel="noopener noreferrer">Boundedness of the Hessian of a biharmonic function in a convex domain</a> (with Vladimir Maz&#8217;ya). <em>Comm. Partial Differential Equations</em> 33 (2008), no. 7&#8209;9, 1439&#8211;1454.</li>
+        <li><a href="http://www-users.math.umn.edu/~svitlana/milman_conf.pdf" target="_blank" rel="noopener noreferrer">Interpolation of Hardy-Sobolev-Besov-Triebel-Lizorkin Spaces and applications to problems in partial differential equations</a> (with Nigel Kalton and Marius Mitrea). <em>Contemp. Math.</em>, 2007.</li>
+        <li><a href="https://pdfs.semanticscholar.org/d23a/62792f168646cbee7e122d0a648ae0c8f212.pdf" target="_blank" rel="noopener noreferrer">The Poisson problem for the Lam&#233; system on low-dimensional Lipschitz domains</a> (with Marius Mitrea). <em>Integral methods in science and engineering</em>, 137&#8211;160, Birkhauser Boston, 2006.</li>
+        <li><a href="http://www-users.math.umn.edu/~svitlana/mayboroda_mitrea1.pdf" target="_blank" rel="noopener noreferrer">Layer potentials and boundary value problems for Laplacian in Lipschitz domains with data in quasi-Banach Besov spaces</a> (with Marius Mitrea). <em>Annali di Matematica Pura ed Applicata</em> (4) 185 (2006), no. 2, 155&#8211;187.</li>
+        <li><a href="http://www-users.math.umn.edu/~svitlana/MayborodaMitreaMRL.pdf" target="_blank" rel="noopener noreferrer">Sharp estimates for Green potentials on non-smooth domains</a> (with Marius Mitrea). <em>Mathematical Research Letters</em>, 11 (2004), 481&#8211;492.</li>
+        <li><a href="http://www-users.math.umn.edu/~svitlana/mayboroda_mitrea2.pdf" target="_blank" rel="noopener noreferrer">Square-function estimates for singular integrals and applications to partial differential equations</a> (with Marius Mitrea). <em>Differential Integral Equations</em>, 17 (2004), no. 7&#8209;8, 873&#8211;892.</li>
+        <li>On one approach to the solution of problems of numerical analysis of the electrostatic field. <em>Collection of the scientific works of KISP</em>, V. 6 (2001), 223&#8211;227.</li>
       </ul>
     </div>
 
