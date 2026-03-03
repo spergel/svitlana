@@ -4,8 +4,7 @@
     { href: 'publications.html', label: 'Publications' },
     { href: 'organized.html',    label: 'Conferences' },
     { href: 'Vitae.pdf',         label: 'CV', attrs: 'target="_blank" rel="noopener noreferrer"' },
-    { href: 'http://www-users.math.umn.edu/~svitlana/teaching.html',
-      label: 'Students &amp; Teaching', attrs: 'target="_blank" rel="noopener noreferrer"' },
+    { href: 'teaching.html', label: 'Students &amp; Teaching' },
   ];
 
   function buildNav() {
