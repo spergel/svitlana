@@ -20,11 +20,22 @@
   function applyStoredTheme() {
     try {
       const stored = localStorage.getItem(THEME_KEY);
-      if (stored === 'dark') {
+      const prefersDark =
+        window.matchMedia &&
+        window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+      if (stored === 'dark' || (!stored && prefersDark)) {
         document.body.classList.add('theme-dark');
+      }
+
+      // If there's no stored value at all, default to dark so it
+      // remains the preferred mode on subsequent visits.
+      if (!stored) {
+        localStorage.setItem(THEME_KEY, 'dark');
       }
     } catch (_) {
       // ignore storage issues
+      document.body.classList.add('theme-dark');
     }
   }
 
