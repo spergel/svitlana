@@ -21,11 +21,16 @@
     if (!el) return;
     el.innerHTML = `
 <header class="site-header">
-  <div class="site-title-block">
-    <h1 class="site-title">
-      <a href="index.html">Svitlana Mayboroda</a>
-    </h1>
-    <p class="site-subtitle">McKnight Presidential Professor &middot; University of Minnesota</p>
+  <div class="site-header-identity">
+    <a href="index.html" class="site-photo-link">
+      <img src="image.png" alt="Svitlana Mayboroda" class="site-photo">
+    </a>
+    <div class="site-title-block">
+      <h1 class="site-title">
+        <a href="index.html">Svitlana Mayboroda</a>
+      </h1>
+      <p class="site-subtitle">McKnight Presidential Professor &middot; University of Minnesota</p>
+    </div>
   </div>
   <nav class="site-nav" aria-label="Main navigation">
     ${buildNav()}
