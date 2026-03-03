@@ -7,107 +7,63 @@
   <link rel="stylesheet" href="styles.css">
   <style>
     main { display: block; }
-
-    .page-title {
-      font-size: clamp(1.3rem, 2vw + 0.8rem, 1.6rem);
-      margin: 20px 0 4px;
-      letter-spacing: 0.01em;
-    }
-
+    .page-title { font-size: 1.3rem; margin: 16px 0 4px; }
     .section-heading {
-      font-size: 1.05rem;
-      color: var(--accent);
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      margin: 28px 0 10px;
-      padding-bottom: 6px;
-      border-bottom: 1px solid rgba(37, 99, 235, 0.18);
+      font-size: 1rem;
+      font-variant: small-caps;
+      margin: 24px 0 8px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid #bbb;
     }
-
-    .person-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
+    .person-list { list-style: none; padding: 0; margin: 0; }
     .person-list li {
-      font-size: 0.9rem;
-      color: var(--fg-muted);
+      font-size: 0.88rem;
       line-height: 1.6;
-      padding: 12px 14px;
-      border-radius: 10px;
-      border: 1px solid var(--border-subtle);
-      background: rgba(255, 255, 255, 0.8);
+      padding: 8px 10px;
+      border-left: 3px solid #ccc;
+      margin-bottom: 6px;
+      background: #fafafa;
     }
-
-    .person-list li strong {
-      color: var(--fg);
-      font-weight: 600;
-    }
-
+    .person-list li strong { font-weight: bold; color: #111; }
     .person-list li .person-note {
       display: block;
-      margin-top: 4px;
-      font-size: 0.85rem;
-      color: var(--fg-muted);
+      margin-top: 3px;
+      font-size: 0.83rem;
+      color: #444;
     }
-
     .person-current strong::after {
       content: "current";
-      display: inline-block;
       font-size: 0.7rem;
-      padding: 1px 7px;
-      border-radius: 999px;
-      background: rgba(16, 185, 129, 0.1);
-      color: #047857;
-      border: 1px solid rgba(16, 185, 129, 0.3);
+      border: 1px solid #888;
+      color: #444;
       margin-left: 8px;
-      font-weight: 500;
+      padding: 0 5px;
+      font-weight: normal;
       vertical-align: middle;
     }
-
     .teaching-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       margin-top: 4px;
     }
-
     .teaching-table thead th {
       text-align: left;
       font-size: 0.78rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--fg-muted);
-      padding: 6px 10px;
-      border-bottom: 1px solid rgba(148, 163, 184, 0.4);
+      font-weight: bold;
+      padding: 6px 8px;
+      background: #f0f0f0;
+      border: 1px solid #bbb;
     }
-
-    .teaching-table tbody tr:nth-child(even) td {
-      background: rgba(248, 250, 252, 0.7);
-    }
-
+    .teaching-table tbody tr:nth-child(even) td { background: #f9f9f9; }
     .teaching-table tbody td {
-      padding: 7px 10px;
-      color: var(--fg-muted);
-      border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+      padding: 5px 8px;
+      border: 1px solid #ddd;
       vertical-align: top;
+      color: #333;
     }
-
-    .teaching-table tbody td:first-child {
-      color: var(--fg);
-      font-weight: 500;
-      white-space: nowrap;
-    }
-
-    .teaching-table tbody td:last-child {
-      font-size: 0.82rem;
-      white-space: nowrap;
-    }
+    .teaching-table tbody td:first-child { font-weight: bold; white-space: nowrap; }
+    .teaching-table tbody td:last-child { white-space: nowrap; }
   </style>
 </head>
 <body>

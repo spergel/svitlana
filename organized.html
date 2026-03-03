@@ -7,66 +7,34 @@
   <link rel="stylesheet" href="styles.css">
   <style>
     main { display: block; }
-
-    .page-title {
-      font-size: clamp(1.3rem, 2vw + 0.8rem, 1.6rem);
-      margin: 20px 0 4px;
-      letter-spacing: 0.01em;
-    }
-
-    .page-note {
-      font-size: 0.9rem;
-      color: var(--fg-muted);
-      margin: 0 0 24px;
-      line-height: 1.5;
-    }
-
+    .page-title { font-size: 1.3rem; margin: 16px 0 4px; }
+    .page-note { font-size: 0.88rem; color: #444; margin: 0 0 18px; }
     .section-heading {
-      font-size: 1.05rem;
-      color: var(--accent);
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      margin: 28px 0 10px;
-      padding-bottom: 6px;
-      border-bottom: 1px solid rgba(37, 99, 235, 0.18);
+      font-size: 1rem;
+      font-variant: small-caps;
+      margin: 24px 0 8px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid #bbb;
     }
-
-    .event-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
+    .event-list { list-style: none; padding: 0; margin: 0; }
     .event-list li {
       display: grid;
       grid-template-columns: 110px 1fr;
-      gap: 10px;
+      gap: 8px;
       align-items: baseline;
-      font-size: 0.9rem;
-      color: var(--fg-muted);
+      font-size: 0.88rem;
       line-height: 1.5;
-      padding: 10px 14px;
-      border-radius: 10px;
-      border: 1px solid var(--border-subtle);
-      background: rgba(255, 255, 255, 0.8);
+      padding: 6px 8px;
+      border-left: 3px solid #ccc;
+      margin-bottom: 5px;
+      background: #fafafa;
     }
-
     @media (max-width: 600px) {
-      .event-list li { grid-template-columns: 1fr; gap: 2px; }
+      .event-list li { grid-template-columns: 1fr; gap: 1px; }
     }
-
-    .event-date {
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: var(--accent);
-      white-space: nowrap;
-    }
-
-    .event-desc strong { color: var(--fg); font-weight: 600; }
-    .event-desc em { font-style: normal; color: var(--fg-muted); }
+    .event-date { font-size: 0.78rem; font-weight: bold; color: #333; white-space: nowrap; }
+    .event-desc strong { font-weight: bold; color: #111; }
+    .event-desc em { font-style: italic; color: #555; }
   </style>
 </head>
 <body>
