@@ -196,6 +196,12 @@ main {
   font-size: 0.88rem;
 }
 
+/* Allow long email/URL strings to wrap inside contact cards */
+.contact-grid a {
+  word-break: break-all;
+  overflow-wrap: anywhere;
+}
+
 /* ── Footer ── */
 .site-footer {
   margin-top: 20px;
@@ -217,3 +223,180 @@ main {
 
 .site-footer a { color: #555; }
 .site-footer a:hover { color: #00c; }
+
+/* ── Theme toggle button ── */
+.theme-toggle {
+  align-self: flex-start;
+  margin-left: auto;
+  padding: 4px 10px;
+  font-size: 0.78rem;
+  font-family: Arial, Helvetica, sans-serif;
+  border: 1px solid #aaa;
+  background: #f7f7f7;
+  cursor: pointer;
+}
+
+.theme-toggle:hover {
+  background: #eee;
+}
+
+/* ── Dark mode overrides ── */
+body.theme-dark {
+  background: #050509;
+  color: #f5f5f5;
+}
+
+body.theme-dark .page {
+  color: inherit;
+}
+
+body.theme-dark .site-header {
+  border-bottom-color: #2f2f3a;
+}
+
+body.theme-dark .site-photo-link {
+  border-color: #444;
+}
+
+body.theme-dark .site-subtitle {
+  color: #b5b5c7;
+}
+
+body.theme-dark .site-nav {
+  border-color: #3a3a4a;
+  background: #11111a;
+}
+
+body.theme-dark .site-nav a {
+  color: #f5f5f5;
+  border-right-color: #3a3a4a;
+  background: transparent;
+}
+
+body.theme-dark .site-nav a:hover {
+  background: #222233;
+  color: #9acbff;
+}
+
+body.theme-dark .site-nav a[aria-current="page"] {
+  background: #e5e5ff;
+  color: #141421;
+}
+
+body.theme-dark .card {
+  border-color: #303046;
+  background: #10101b;
+}
+
+body.theme-dark .card h2 {
+  border-bottom-color: #2b2b3b;
+}
+
+body.theme-dark .card p {
+  color: #e2e2f0;
+}
+
+body.theme-dark .card a {
+  color: #9acbff;
+}
+
+body.theme-dark .card a:hover {
+  color: #ffd1a8;
+}
+
+body.theme-dark .link-list li a {
+  background: #151526;
+  border-color: #303046;
+  color: #9acbff;
+}
+
+body.theme-dark .link-list li a:hover {
+  background: #1f1f32;
+  color: #ffd1a8;
+}
+
+/* Publications page dark tweaks */
+body.theme-dark .pub-list li {
+  background: #1b1b2a;
+  border-left-color: #4a4a6a;
+}
+
+body.theme-dark .status-badge {
+  background: #2a2a3d;
+  border-color: #555577;
+  color: #e2e2f0;
+}
+
+/* Conferences page dark tweaks */
+body.theme-dark .event-list li {
+  background: #1b1b2a;
+  border-left-color: #4a4a6a;
+}
+
+body.theme-dark .event-date {
+  color: #e2e2f0;
+}
+
+body.theme-dark .event-desc strong {
+  color: #f5f5f5;
+}
+
+body.theme-dark .event-desc em {
+  color: #c0c0d5;
+}
+
+/* Students & teaching page dark tweaks */
+body.theme-dark .person-list li {
+  background: #1b1b2a;
+  border-left-color: #4a4a6a;
+}
+
+body.theme-dark .person-list li strong {
+  color: #f5f5f5;
+}
+
+body.theme-dark .person-list li .person-note {
+  color: #c0c0d5;
+}
+
+body.theme-dark .person-current strong::after {
+  border-color: #666688;
+  color: #d4d4ea;
+}
+
+body.theme-dark .teaching-table thead th {
+  background: #181824;
+  border-color: #3a3a4a;
+}
+
+body.theme-dark .teaching-table tbody tr:nth-child(even) td {
+  background: #141420;
+}
+
+body.theme-dark .teaching-table tbody td {
+  border-color: #34344a;
+  color: #e2e2f0;
+}
+
+body.theme-dark .site-footer {
+  border-top-color: #303046;
+  color: #c0c0d5;
+}
+
+body.theme-dark .site-footer a {
+  color: #c0c0d5;
+}
+
+body.theme-dark .site-footer a:hover {
+  color: #9acbff;
+}
+
+body.theme-dark .theme-toggle {
+  background: #151526;
+  border-color: #3a3a4a;
+  color: #f5f5f5;
+}
+
+body.theme-dark .theme-toggle:hover {
+  background: #202036;
+}

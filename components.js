@@ -15,6 +15,42 @@
     }).join('\n        ');
   }
 
+  const THEME_KEY = 'sv_theme';
+
+  function applyStoredTheme() {
+    try {
+      const stored = localStorage.getItem(THEME_KEY);
+      if (stored === 'dark') {
+        document.body.classList.add('theme-dark');
+      }
+    } catch (_) {
+      // ignore storage issues
+    }
+  }
+
+  function updateThemeToggleLabel(btn) {
+    if (!btn) return;
+    const isDark = document.body.classList.contains('theme-dark');
+    btn.textContent = isDark ? 'Light mode' : 'Dark mode';
+    btn.setAttribute('aria-pressed', isDark ? 'true' : 'false');
+  }
+
+  function wireThemeToggle() {
+    const btn = document.getElementById('theme-toggle');
+    if (!btn) return;
+    updateThemeToggleLabel(btn);
+    btn.addEventListener('click', () => {
+      const isDark = !document.body.classList.contains('theme-dark');
+      document.body.classList.toggle('theme-dark', isDark);
+      try {
+        localStorage.setItem(THEME_KEY, isDark ? 'dark' : 'light');
+      } catch (_) {
+        // ignore storage issues
+      }
+      updateThemeToggleLabel(btn);
+    });
+  }
+
   function injectHeader() {
     const el = document.getElementById('site-header');
     if (!el) return;
@@ -34,6 +70,11 @@
   <nav class="site-nav" aria-label="Main navigation">
     ${buildNav()}
   </nav>
+  <button type="button"
+          id="theme-toggle"
+          class="theme-toggle"
+          aria-label="Toggle dark mode">
+  </button>
 </header>`;
   }
 
@@ -55,65 +96,11 @@
     );
   }
 
-  function applyTheme(theme) {
-    const body = document.body;
-    const isDark = theme === 'dark';
-    body.classList.toggle('dark', isDark);
-
-    const btn = document.querySelector('.theme-toggle-fab');
-    if (!btn) return;
-
-    const icon = btn.querySelector('.theme-toggle-icon');
-    if (icon) {
-      icon.textContent = isDark ? '☀' : '☾';
-    }
-
-    btn.setAttribute(
-      'aria-label',
-      isDark ? 'Switch to light mode' : 'Switch to dark mode'
-    );
-  }
-
-  function initThemeToggle() {
-    const STORAGE_KEY = 'site-theme';
-    let saved = null;
-    try {
-      saved = window.localStorage.getItem(STORAGE_KEY);
-    } catch (e) {}
-
-    const prefersDark =
-      window.matchMedia &&
-      window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-    const initialTheme = saved || (prefersDark ? 'dark' : 'light');
-
-    let btn = document.querySelector('.theme-toggle-fab');
-    if (!btn) {
-      btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'theme-toggle-fab';
-      btn.innerHTML =
-        '<span class="theme-toggle-icon" aria-hidden="true">☾</span>';
-      document.body.appendChild(btn);
-    }
-
-    applyTheme(initialTheme);
-
-    btn.addEventListener('click', () => {
-      const nextTheme = document.body.classList.contains('dark')
-        ? 'light'
-        : 'dark';
-      try {
-        window.localStorage.setItem(STORAGE_KEY, nextTheme);
-      } catch (e) {}
-      applyTheme(nextTheme);
-    });
-  }
-
   function init() {
+    applyStoredTheme();
     injectHeader();
     injectFooter();
-    initThemeToggle();
+    wireThemeToggle();
   }
 
   if (document.readyState === 'loading') {
