@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Wave Localization Explorer – Svitlana Mayboroda</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    main { display: block; }
+    .page-title { font-size: 1.3rem; margin: 16px 0 4px; }
+
+    .sim-layout {
+      display: grid;
+      grid-template-columns: 1fr 240px;
+      gap: 16px;
+      align-items: start;
+      margin-top: 12px;
+    }
+    @media (max-width: 780px) {
+      .sim-layout { grid-template-columns: 1fr; }
+    }
+
+    #simCanvas {
+      display: block;
+      width: 100%;
+      aspect-ratio: 1;
+      image-rendering: pixelated;
+      cursor: crosshair;
+      border: 1px solid #555;
+    }
+
+    .sim-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 0.84rem;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .sim-panel label {
+      display: block;
+      margin-bottom: 2px;
+      font-weight: bold;
+      color: inherit;
+    }
+
+    .sim-panel input[type=range] {
+      width: 100%;
+    }
+
+    .sim-panel .val-display {
+      font-size: 0.75rem;
+      color: #aaa;
+    }
+
+    .btn-row {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .sim-btn {
+      padding: 6px 10px;
+      font-size: 0.8rem;
+      font-family: Arial, Helvetica, sans-serif;
+      border: 1px solid #666;
+      background: #1b1b2a;
+      color: #e2e2f0;
+      cursor: pointer;
+      text-align: left;
+    }
+    .sim-btn:hover { background: #2a2a40; }
+    .sim-btn.active { background: #9acbff; color: #111; border-color: #9acbff; font-weight: bold; }
+
+    .sim-mode-group { display: flex; flex-direction: column; gap: 4px; }
+
+    .sim-legend {
+      margin-top: 8px;
+      font-size: 0.75rem;
+      color: #9090b0;
+      line-height: 1.5;
+    }
+    .sim-legend strong { color: #c0c0d5; }
+
+    .sim-info {
+      margin-top: 18px;
+      padding: 12px 14px;
+      border-left: 3px solid #4a4a6a;
+      background: #10101b;
+      font-size: 0.85rem;
+      color: #c0c0d5;
+      line-height: 1.65;
+    }
+    .sim-info h3 {
+      margin: 0 0 6px;
+      font-size: 0.92rem;
+      color: #e2e2f0;
+    }
+    .sim-info a { color: #9acbff; }
+    .sim-info em { color: #9acbff; font-style: normal; font-weight: bold; }
+
+    .status-line {
+      font-size: 0.72rem;
+      color: #777;
+      margin-top: 4px;
+      min-height: 1em;
+    }
+
+    /* Light mode overrides */
+    body:not(.theme-dark) .sim-btn {
+      background: #f0f0f0;
+      color: #111;
+      border-color: #aaa;
+    }
+    body:not(.theme-dark) .sim-btn:hover { background: #e0e0f0; }
+    body:not(.theme-dark) .sim-btn.active { background: #00c; color: #fff; border-color: #00c; }
+    body:not(.theme-dark) .sim-legend { color: #444; }
+    body:not(.theme-dark) .sim-legend strong { color: #222; }
+    body:not(.theme-dark) .sim-info { background: #fafafa; border-left-color: #aaa; color: #444; }
+    body:not(.theme-dark) .sim-info h3 { color: #111; }
+    body:not(.theme-dark) .sim-info a { color: #00c; }
+    body:not(.theme-dark) .sim-info em { color: #005; }
+    body:not(.theme-dark) .status-line { color: #999; }
+    body:not(.theme-dark) #simCanvas { border-color: #aaa; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div id="site-header"></div>
+
+    <h2 class="page-title">Wave Localization Explorer</h2>
+
+    <div class="sim-layout">
+      <!-- Canvas -->
+      <div>
+        <canvas id="simCanvas" width="128" height="128"></canvas>
+        <div class="status-line" id="statusLine">Initializing&hellip;</div>
+      </div>
+
+      <!-- Controls -->
+      <div class="sim-panel">
+
+        <div>
+          <label>Mode</label>
+          <div class="sim-mode-group">
+            <button class="sim-btn active" id="btnLandscape">Landscape function</button>
+            <button class="sim-btn" id="btnWave">Wave dynamics</button>
+            <button class="sim-btn" id="btnPotential">Disorder potential</button>
+          </div>
+        </div>
+
+        <div>
+          <label>Disorder strength <span class="val-display" id="strengthVal"></span></label>
+          <input type="range" id="strengthSlider" min="1" max="20" value="8" step="0.5">
+        </div>
+
+        <div>
+          <label>Correlation length <span class="val-display" id="corrVal"></span></label>
+          <input type="range" id="corrSlider" min="4" max="40" value="16" step="1">
+        </div>
+
+        <div class="btn-row">
+          <button class="sim-btn" id="btnRegen">&#8635; New disorder</button>
+          <button class="sim-btn" id="btnResetWave">&#9632; Clear waves</button>
+        </div>
+
+        <div class="sim-legend" id="modeLegend"></div>
+      </div>
+    </div>
+
+    <!-- Info panel -->
+    <div class="sim-info">
+      <h3>What are you seeing?</h3>
+      <p>
+        In a <strong>disordered medium</strong> (like a semiconductor with impurities, or a room with irregular walls),
+        waves do not spread freely — they get <strong>trapped</strong> in certain regions and blocked from others.
+        This phenomenon is called <em>Anderson localization</em>.
+      </p>
+      <p>
+        Svitlana Mayboroda and collaborators discovered the
+        <em>localization landscape</em>: a single function &mdash; solution to <strong>&#8722;&#916;u + Vu = 1</strong> &mdash;
+        whose reciprocal <strong>W&nbsp;=&nbsp;1/u</strong> acts as an
+        &ldquo;effective potential&rdquo; predicting exactly where waves will localize, without ever solving the full eigenvalue problem.
+        <br><br>
+        In <strong>Landscape mode</strong>, bright regions are barriers; dark valleys are where quantum states concentrate.
+        In <strong>Wave mode</strong>, click anywhere to create a pulse and watch it scatter and trap in the disordered landscape.
+        The long-time wave pattern closely matches the landscape prediction.
+      </p>
+    </div>
+
+    <div id="site-footer"></div>
+  </div>
+
+  <script src="components.js"></script>
+  <script>
+  (function () {
+    const N = 128;
+    const canvas = document.getElementById('simCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Shared state
+    let V   = new Float32Array(N * N);
+    let uLS = new Float32Array(N * N).fill(0.5); // landscape u
+    let wA  = new Float32Array(N * N); // wave t-1
+    let wB  = new Float32Array(N * N); // wave t
+    let wC  = new Float32Array(N * N); // wave t+1 (scratch)
+
+    let mode = 'landscape'; // 'landscape' | 'wave' | 'potential'
+    let lsIter = 0;
+    let animId = null;
+    let strength = 8;
+    let corrLen  = 16;
+
+    // ── Colormap ────────────────────────────────────────────────────
+    // Turbo-inspired: black → purple → blue → red → orange → lime → cyan → white
+    const CMAP = [
+      [  0,   0,   0],
+      [ 60,   0, 100],
+      [  0,  30, 190],
+      [180,  10,  10],
+      [230, 100,   0],
+      [140, 230,  20],
+      [  0, 220, 200],
+      [255, 255, 255],
+    ];
+
+    function colormap(t) {
+      t = Math.max(0, Math.min(1, t));
+      const pos = t * (CMAP.length - 1);
+      const lo  = Math.floor(pos);
+      const hi  = Math.min(lo + 1, CMAP.length - 1);
+      const f   = pos - lo;
+      const a   = CMAP[lo], b = CMAP[hi];
+      return [
+        a[0] + f * (b[0] - a[0]),
+        a[1] + f * (b[1] - a[1]),
+        a[2] + f * (b[2] - a[2]),
+      ];
+    }
+
+    // ── Disorder potential (sum of random cosines) ───────────────────
+    function generatePotential() {
+      V.fill(0);
+      const numModes = 50;
+      for (let m = 0; m < numModes; m++) {
+        const kx  = (2 * Math.PI / corrLen) * (Math.random() * 2 - 1);
+        const ky  = (2 * Math.PI / corrLen) * (Math.random() * 2 - 1);
+        const phi = Math.random() * 2 * Math.PI;
+        const amp = Math.random();
+        for (let i = 0; i < N; i++) {
+          for (let j = 0; j < N; j++) {
+            V[i * N + j] += amp * Math.cos(kx * i + ky * j + phi);
+          }
+        }
+      }
+      // Normalize to [0, strength]
+      let mn = V[0], mx = V[0];
+      for (let k = 1; k < N * N; k++) {
+        if (V[k] < mn) mn = V[k];
+        if (V[k] > mx) mx = V[k];
+      }
+      const rng = mx - mn || 1;
+      for (let k = 0; k < N * N; k++) {
+        V[k] = strength * (V[k] - mn) / rng;
+      }
+    }
+
+    // ── Landscape solver: Gauss-Seidel for (-Δ + V)u = 1 ────────────
+    function solveLandscapeSteps(steps) {
+      for (let s = 0; s < steps; s++) {
+        for (let i = 0; i < N; i++) {
+          const im = (i - 1 + N) % N, ip = (i + 1) % N;
+          for (let j = 0; j < N; j++) {
+            const jm = (j - 1 + N) % N, jp = (j + 1) % N;
+            const nbr = uLS[im*N+j] + uLS[ip*N+j] + uLS[i*N+jm] + uLS[i*N+jp];
+            uLS[i*N+j] = (1 + nbr) / (4 + V[i*N+j]);
+          }
+        }
+      }
+      lsIter += steps;
+    }
+
+    // ── Wave equation step ────────────────────────────────────────────
+    // u_tt = c²(x,y) * Δu,  c² = c0 / (1 + α*V)
+    function stepWave(substeps) {
+      const DAMP = 0.9985;
+      for (let sub = 0; sub < substeps; sub++) {
+        for (let i = 1; i < N - 1; i++) {
+          for (let j = 1; j < N - 1; j++) {
+            const idx = i * N + j;
+            // speed slowdown in high-disorder regions
+            const c2 = 0.2 / (1 + V[idx] * 0.25);
+            const lap = wB[idx - N] + wB[idx + N] + wB[idx - 1] + wB[idx + 1] - 4 * wB[idx];
+            wC[idx] = (2 * wB[idx] - wA[idx] + c2 * lap) * DAMP;
+          }
+        }
+        // absorbing boundary
+        for (let k = 0; k < N; k++) {
+          wC[k] = wC[(N-1)*N+k] = wC[k*N] = wC[k*N+N-1] = 0;
+        }
+        // swap A <- B <- C
+        const tmp = wA; wA = wB; wB = wC; wC = tmp;
+      }
+    }
+
+    function addPulse(px, py, amp) {
+      const R = 6;
+      for (let di = -R; di <= R; di++) {
+        for (let dj = -R; dj <= R; dj++) {
+          const ni = py + di, nj = px + dj;
+          if (ni < 1 || ni >= N - 1 || nj < 1 || nj >= N - 1) continue;
+          const r2 = di * di + dj * dj;
+          wB[ni * N + nj] += amp * Math.exp(-r2 / 6);
+        }
+      }
+    }
+
+    function resetWaves() {
+      wA.fill(0); wB.fill(0); wC.fill(0);
+    }
+
+    // ── Rendering ──────────────────────────────────────────────────────
+    const offCanvas = document.createElement('canvas');
+    offCanvas.width = offCanvas.height = N;
+    const offCtx = offCanvas.getContext('2d');
+
+    function renderFrame(field, normalize, symmetric) {
+      const imgData = offCtx.createImageData(N, N);
+      const data    = imgData.data;
+      let mn = field[0], mx = field[0];
+      for (let k = 1; k < N * N; k++) {
+        if (field[k] < mn) mn = field[k];
+        if (field[k] > mx) mx = field[k];
+      }
+
+      let rng;
+      if (symmetric) {
+        const abs = Math.max(Math.abs(mn), Math.abs(mx));
+        mn = -abs; mx = abs; rng = 2 * abs || 1;
+      } else {
+        rng = mx - mn || 1;
+      }
+
+      for (let k = 0; k < N * N; k++) {
+        const t = (field[k] - mn) / rng;
+        const [r, g, b] = colormap(t);
+        data[k * 4]     = r;
+        data[k * 4 + 1] = g;
+        data[k * 4 + 2] = b;
+        data[k * 4 + 3] = 255;
+      }
+      offCtx.putImageData(imgData, 0, 0);
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      ctx.drawImage(offCanvas, 0, 0, canvas.width, canvas.height);
+    }
+
+    // Landscape: show W = 1/u (high = barriers, low = wells)
+    function renderLandscape() {
+      const W = new Float32Array(N * N);
+      for (let k = 0; k < N * N; k++) W[k] = 1 / (uLS[k] + 1e-6);
+      renderFrame(W, true, false);
+    }
+
+    function renderWaveField() {
+      renderFrame(wB, true, true);
+    }
+
+    function renderPotential() {
+      renderFrame(V, true, false);
+    }
+
+    // ── Status line ────────────────────────────────────────────────────
+    const statusEl   = document.getElementById('statusLine');
+    const legendEl   = document.getElementById('modeLegend');
+
+    const LEGENDS = {
+      landscape: '<strong>W = 1/u</strong> — the localization landscape. Dark valleys trap quantum states; bright ridges are barriers. Predicted by Mayboroda et al. without solving the full eigenvalue problem.',
+      wave:      '<strong>Click</strong> to create a wave pulse. Watch it scatter and localize in the disordered medium. The long-time amplitude pattern mirrors the landscape above.',
+      potential: '<strong>V(x,y)</strong> — the random disorder potential. High values impede wave propagation; low values form channels.',
+    };
+
+    function setLegend() { legendEl.innerHTML = LEGENDS[mode]; }
+
+    // ── Main animation loop ─────────────────────────────────────────────
+    let lsDone = false;
+    function loop() {
+      if (mode === 'landscape') {
+        if (!lsDone) {
+          solveLandscapeSteps(12);
+          if (lsIter < 600) {
+            statusEl.textContent = `Solving landscape… (${lsIter} / 600 iterations)`;
+          } else {
+            lsDone = true;
+            statusEl.textContent = 'Landscape converged.';
+          }
+        }
+        renderLandscape();
+      } else if (mode === 'wave') {
+        stepWave(4);
+        renderWaveField();
+        statusEl.textContent = 'Click canvas to add a wave pulse.';
+      } else {
+        renderPotential();
+        statusEl.textContent = 'Disorder potential V(x,y).';
+      }
+      animId = requestAnimationFrame(loop);
+    }
+
+    // ── Initialization ─────────────────────────────────────────────────
+    function init() {
+      lsDone = false;
+      lsIter = 0;
+      uLS.fill(0.5);
+      resetWaves();
+      generatePotential();
+      setLegend();
+      if (animId) cancelAnimationFrame(animId);
+      loop();
+    }
+
+    // ── Controls wiring ────────────────────────────────────────────────
+    const strengthSlider = document.getElementById('strengthSlider');
+    const corrSlider     = document.getElementById('corrSlider');
+    const strengthVal    = document.getElementById('strengthVal');
+    const corrVal        = document.getElementById('corrVal');
+
+    function updateSliderLabels() {
+      strengthVal.textContent = parseFloat(strengthSlider.value).toFixed(1);
+      corrVal.textContent     = corrSlider.value + ' px';
+    }
+    updateSliderLabels();
+
+    strengthSlider.addEventListener('input', () => {
+      strength = parseFloat(strengthSlider.value);
+      updateSliderLabels();
+    });
+    corrSlider.addEventListener('input', () => {
+      corrLen = parseInt(corrSlider.value);
+      updateSliderLabels();
+    });
+
+    function setMode(m) {
+      mode = m;
+      document.getElementById('btnLandscape').classList.toggle('active', m === 'landscape');
+      document.getElementById('btnWave').classList.toggle('active', m === 'wave');
+      document.getElementById('btnPotential').classList.toggle('active', m === 'potential');
+      setLegend();
+    }
+
+    document.getElementById('btnLandscape').addEventListener('click', () => setMode('landscape'));
+    document.getElementById('btnWave').addEventListener('click',      () => setMode('wave'));
+    document.getElementById('btnPotential').addEventListener('click', () => setMode('potential'));
+
+    document.getElementById('btnRegen').addEventListener('click', () => {
+      strength = parseFloat(strengthSlider.value);
+      corrLen  = parseInt(corrSlider.value);
+      init();
+    });
+    document.getElementById('btnResetWave').addEventListener('click', resetWaves);
+
+    // Click canvas to add pulse (wave mode) or inspect (landscape mode)
+    canvas.addEventListener('click', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const px   = Math.floor((e.clientX - rect.left) / rect.width  * N);
+      const py   = Math.floor((e.clientY - rect.top)  / rect.height * N);
+      if (mode === 'wave') {
+        addPulse(px, py, 8);
+      }
+    });
+
+    // Start
+    init();
+  })();
+  </script>
+</body>
+</html>

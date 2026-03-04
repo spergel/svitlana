@@ -6,6 +6,7 @@
     { href: 'Vitae.pdf',         label: 'CV', attrs: 'target="_blank" rel="noopener noreferrer"' },
     { href: 'teaching.html',     label: 'Students &amp; Teaching' },
     { href: 'media.html',        label: 'Media' },
+    { href: 'simulation.html',   label: 'Simulation' },
   ];
 
   function buildNav() {
