@@ -43,8 +43,8 @@ body {
   display: block;
   border: 1px solid #aaa;
   flex-shrink: 0;
-  width: 64px;
-  height: 64px;
+  width: 120px;
+  height: 120px;
   overflow: hidden;
 }
 
@@ -321,6 +321,18 @@ body.theme-dark .pub-list li {
   border-left-color: #4a4a6a;
 }
 
+body.theme-dark .pub-list li a {
+  color: #9acbff;
+}
+
+body.theme-dark .pub-list li a:hover {
+  color: #ffd1a8;
+}
+
+body.theme-dark .pub-list li em {
+  color: #c0c0d5;
+}
+
 body.theme-dark .status-badge {
   background: #2a2a3d;
   border-color: #555577;
@@ -345,6 +357,22 @@ body.theme-dark .event-desc em {
   color: #c0c0d5;
 }
 
+body.theme-dark .event-list li a {
+  color: #9acbff;
+}
+
+body.theme-dark .event-list li a:hover {
+  color: #ffd1a8;
+}
+
+body.theme-dark .page-note a {
+  color: #9acbff;
+}
+
+body.theme-dark .page-note {
+  color: #c0c0d5;
+}
+
 /* Students & teaching page dark tweaks */
 body.theme-dark .person-list li {
   background: #1b1b2a;
@@ -362,6 +390,19 @@ body.theme-dark .person-list li .person-note {
 body.theme-dark .person-current strong::after {
   border-color: #666688;
   color: #d4d4ea;
+}
+
+body.theme-dark .person-list li a {
+  color: #9acbff;
+}
+
+body.theme-dark .person-list li a:hover {
+  color: #ffd1a8;
+}
+
+body.theme-dark .section-heading {
+  border-bottom-color: #3a3a4a;
+  color: #e2e2f0;
 }
 
 body.theme-dark .teaching-table thead th {
@@ -399,4 +440,30 @@ body.theme-dark .theme-toggle {
 
 body.theme-dark .theme-toggle:hover {
   background: #202036;
+}
+
+/* Media page dark tweaks */
+body.theme-dark .media-list li {
+  background: #1b1b2a;
+  border-left-color: #4a4a6a;
+}
+
+body.theme-dark .media-list li .media-outlet {
+  color: #9090b0;
+}
+
+body.theme-dark .media-list li .media-title {
+  color: #f5f5f5;
+}
+
+body.theme-dark .media-list li .media-title a {
+  color: #9acbff;
+}
+
+body.theme-dark .media-list li .media-title a:hover {
+  color: #ffd1a8;
+}
+
+body.theme-dark .media-list li .media-desc {
+  color: #c0c0d5;
 }

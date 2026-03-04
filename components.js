@@ -4,7 +4,8 @@
     { href: 'publications.html', label: 'Publications' },
     { href: 'organized.html',    label: 'Conferences' },
     { href: 'Vitae.pdf',         label: 'CV', attrs: 'target="_blank" rel="noopener noreferrer"' },
-    { href: 'teaching.html', label: 'Students &amp; Teaching' },
+    { href: 'teaching.html',     label: 'Students &amp; Teaching' },
+    { href: 'media.html',        label: 'Media' },
   ];
 
   function buildNav() {
