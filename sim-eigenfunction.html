@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Eigenfunction vs. Landscape – Svitlana Mayboroda</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    main { display: block; }
+    .page-title { font-size: 1.3rem; margin: 16px 0 4px; }
+
+    .dual-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 14px;
+    }
+    @media (max-width: 680px) {
+      .dual-layout { grid-template-columns: 1fr; }
+    }
+
+    .canvas-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .canvas-label {
+      font-size: 0.78rem;
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: bold;
+      text-align: center;
+      color: #555;
+    }
+    body.theme-dark .canvas-label { color: #9090b0; }
+
+    canvas.sim-canvas {
+      display: block;
+      width: 100%;
+      aspect-ratio: 1;
+      image-rendering: pixelated;
+      border: 1px solid #555;
+    }
+    body:not(.theme-dark) canvas.sim-canvas { border-color: #aaa; }
+
+    .controls-row {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      align-items: end;
+      font-size: 0.84rem;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    @media (max-width: 600px) {
+      .controls-row { grid-template-columns: 1fr 1fr; }
+    }
+
+    .ctrl-group label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 3px;
+    }
+    .ctrl-group input[type=range] { width: 100%; }
+    .val-display { font-size: 0.72rem; color: #888; }
+
+    .btn-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+
+    .sim-btn {
+      padding: 6px 12px;
+      font-size: 0.8rem;
+      font-family: Arial, Helvetica, sans-serif;
+      border: 1px solid #666;
+      background: #1b1b2a;
+      color: #e2e2f0;
+      cursor: pointer;
+    }
+    .sim-btn:hover { background: #2a2a40; }
+    body:not(.theme-dark) .sim-btn { background: #f0f0f0; color: #111; border-color: #aaa; }
+    body:not(.theme-dark) .sim-btn:hover { background: #e0e0f0; }
+
+    .status-line {
+      font-size: 0.72rem;
+      color: #777;
+      margin-top: 6px;
+      min-height: 1em;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .sim-info {
+      margin-top: 20px;
+      padding: 12px 14px;
+      border-left: 3px solid #4a4a6a;
+      background: #10101b;
+      font-size: 0.85rem;
+      color: #c0c0d5;
+      line-height: 1.65;
+    }
+    .sim-info h3 { margin: 0 0 6px; font-size: 0.92rem; color: #e2e2f0; }
+    .sim-info a  { color: #9acbff; }
+    .sim-info em { color: #9acbff; font-style: normal; font-weight: bold; }
+    body:not(.theme-dark) .sim-info { background: #fafafa; border-left-color: #aaa; color: #444; }
+    body:not(.theme-dark) .sim-info h3 { color: #111; }
+    body:not(.theme-dark) .sim-info a  { color: #00c; }
+    body:not(.theme-dark) .sim-info em { color: #005; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div id="site-header"></div>
+
+    <h2 class="page-title">Eigenfunction vs. Landscape</h2>
+
+    <div class="dual-layout">
+      <div class="canvas-wrap">
+        <div class="canvas-label">Eigenfunction &phi;<sub>n</sub></div>
+        <canvas class="sim-canvas" id="canvasEigen" width="64" height="64"></canvas>
+      </div>
+      <div class="canvas-wrap">
+        <div class="canvas-label">Landscape W = 1/u</div>
+        <canvas class="sim-canvas" id="canvasLandscape" width="64" height="64"></canvas>
+      </div>
+    </div>
+
+    <div class="controls-row">
+      <div class="ctrl-group">
+        <label>Eigenmode <span class="val-display" id="modeVal"></span></label>
+        <input type="range" id="modeSlider" min="1" max="6" value="1" step="1">
+      </div>
+      <div class="ctrl-group">
+        <label>Disorder strength <span class="val-display" id="strengthVal"></span></label>
+        <input type="range" id="strengthSlider" min="1" max="20" value="8" step="0.5">
+      </div>
+      <div class="ctrl-group">
+        <label>Correlation length <span class="val-display" id="corrVal"></span></label>
+        <input type="range" id="corrSlider" min="4" max="24" value="12" step="1">
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="sim-btn" id="btnRegen">&#8635; New disorder</button>
+    </div>
+
+    <div class="status-line" id="statusLine">Initializing&hellip;</div>
+
+    <div class="sim-info">
+      <h3>What are you seeing?</h3>
+      <p>
+        The <strong>left panel</strong> shows a quantum eigenfunction &phi;<sub>n</sub> &mdash;
+        a solution to the Schr&ouml;dinger equation
+        <strong>(&minus;&Delta;&nbsp;+&nbsp;V)&phi;&nbsp;=&nbsp;E&phi;</strong>
+        in a disordered potential V, computed here via power iteration with deflation.
+        Each eigenfunction is localized: it concentrates in a small region and decays elsewhere.
+      </p>
+      <p>
+        The <strong>right panel</strong> shows the <em>localization landscape</em>
+        W&nbsp;=&nbsp;1/u, where u solves <strong>(&minus;&Delta;&nbsp;+&nbsp;V)u&nbsp;=&nbsp;1</strong>.
+        Discovered by Filoche &amp; Mayboroda (2012), W predicts &mdash; without computing any eigenfunction &mdash;
+        exactly which regions will trap quantum states.
+        Dark valleys in W are the predicted localization wells;
+        compare them with the bright peaks of each eigenfunction.
+      </p>
+      <p>
+        Use the <strong>eigenmode slider</strong> to step through the first six modes
+        (computed from lowest to highest energy). Each one sits in a valley of W.
+        See: <a href="https://www.pnas.org/doi/10.1073/pnas.1120432109" target="_blank" rel="noopener noreferrer">
+        Filoche &amp; Mayboroda, <em>PNAS</em> 2012</a>.
+      </p>
+    </div>
+
+    <div id="site-footer"></div>
+  </div>
+
+  <script src="components.js"></script>
+  <script>
+  (function () {
+    const N = 64;
+
+    // ── Colormap (turbo-inspired) ────────────────────────────────────
+    const CMAP = [
+      [  0,   0,   0],
+      [ 60,   0, 100],
+      [  0,  30, 190],
+      [180,  10,  10],
+      [230, 100,   0],
+      [140, 230,  20],
+      [  0, 220, 200],
+      [255, 255, 255],
+    ];
+    function colormap(t) {
+      t = Math.max(0, Math.min(1, t));
+      const pos = t * (CMAP.length - 1);
+      const lo = Math.floor(pos), hi = Math.min(lo + 1, CMAP.length - 1);
+      const f = pos - lo;
+      const a = CMAP[lo], b = CMAP[hi];
+      return [a[0] + f*(b[0]-a[0]), a[1] + f*(b[1]-a[1]), a[2] + f*(b[2]-a[2])];
+    }
+
+    // ── Canvas helpers ───────────────────────────────────────────────
+    const canvasE = document.getElementById('canvasEigen');
+    const canvasL = document.getElementById('canvasLandscape');
+    const ctxE = canvasE.getContext('2d');
+    const ctxL = canvasL.getContext('2d');
+    const offE = document.createElement('canvas'); offE.width = offE.height = N;
+    const offL = document.createElement('canvas'); offL.width = offL.height = N;
+    const offCtxE = offE.getContext('2d');
+    const offCtxL = offL.getContext('2d');
+
+    function renderField(field, ctx, offCanvas, offCtx, symmetric) {
+      let mn = field[0], mx = field[0];
+      for (let k = 1; k < N*N; k++) {
+        if (field[k] < mn) mn = field[k];
+        if (field[k] > mx) mx = field[k];
+      }
+      let rng;
+      if (symmetric) {
+        const abs = Math.max(Math.abs(mn), Math.abs(mx));
+        mn = -abs; mx = abs; rng = 2*abs || 1;
+      } else {
+        rng = mx - mn || 1;
+      }
+      const img = offCtx.createImageData(N, N);
+      const d = img.data;
+      for (let k = 0; k < N*N; k++) {
+        const t = (field[k] - mn) / rng;
+        const [r, g, b] = colormap(t);
+        d[k*4]=r; d[k*4+1]=g; d[k*4+2]=b; d[k*4+3]=255;
+      }
+      offCtx.putImageData(img, 0, 0);
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      ctx.drawImage(offCanvas, 0, 0, offCanvas.width * (canvasE.width / N), offCanvas.height * (canvasE.height / N));
+    }
+
+    function renderToCanvas(field, targetCanvas, targetCtx, offCanvas, offCtxSrc, symmetric) {
+      let mn = field[0], mx = field[0];
+      for (let k = 1; k < N*N; k++) {
+        if (field[k] < mn) mn = field[k];
+        if (field[k] > mx) mx = field[k];
+      }
+      let rng;
+      if (symmetric) {
+        const abs = Math.max(Math.abs(mn), Math.abs(mx));
+        mn = -abs; mx = abs; rng = 2*abs || 1;
+      } else { rng = mx - mn || 1; }
+      const img = offCtxSrc.createImageData(N, N);
+      const d = img.data;
+      for (let k = 0; k < N*N; k++) {
+        const t = (field[k] - mn) / rng;
+        const [r, g, b] = colormap(t);
+        d[k*4]=r; d[k*4+1]=g; d[k*4+2]=b; d[k*4+3]=255;
+      }
+      offCtxSrc.putImageData(img, 0, 0);
+      targetCtx.imageSmoothingEnabled = true;
+      targetCtx.imageSmoothingQuality = 'high';
+      targetCtx.drawImage(offCanvas, 0, 0, targetCanvas.width, targetCanvas.height);
+    }
+
+    // ── Potential ────────────────────────────────────────────────────
+    let V = new Float32Array(N * N);
+    let strength = 8, corrLen = 12;
+
+    function generatePotential() {
+      V.fill(0);
+      for (let m = 0; m < 50; m++) {
+        const kx  = (2 * Math.PI / corrLen) * (Math.random() * 2 - 1);
+        const ky  = (2 * Math.PI / corrLen) * (Math.random() * 2 - 1);
+        const phi = Math.random() * 2 * Math.PI;
+        const amp = Math.random();
+        for (let i = 0; i < N; i++)
+          for (let j = 0; j < N; j++)
+            V[i*N+j] += amp * Math.cos(kx*i + ky*j + phi);
+      }
+      let mn = V[0], mx = V[0];
+      for (let k = 1; k < N*N; k++) { if (V[k]<mn) mn=V[k]; if (V[k]>mx) mx=V[k]; }
+      const rng = mx - mn || 1;
+      for (let k = 0; k < N*N; k++) V[k] = strength * (V[k]-mn)/rng;
+    }
+
+    // ── Landscape solver (Gauss-Seidel) ─────────────────────────────
+    let uLS = new Float32Array(N * N).fill(0.5);
+
+    function solveLandscape(iters) {
+      for (let s = 0; s < iters; s++) {
+        for (let i = 0; i < N; i++) {
+          const im=(i-1+N)%N, ip=(i+1)%N;
+          for (let j = 0; j < N; j++) {
+            const jm=(j-1+N)%N, jp=(j+1)%N;
+            const nbr = uLS[im*N+j]+uLS[ip*N+j]+uLS[i*N+jm]+uLS[i*N+jp];
+            uLS[i*N+j] = (1 + nbr) / (4 + V[i*N+j]);
+          }
+        }
+      }
+    }
+
+    function computeLandscape() {
+      uLS.fill(0.5);
+      solveLandscape(800);
+    }
+
+    function getLandscapeW() {
+      const W = new Float32Array(N * N);
+      for (let k = 0; k < N*N; k++) W[k] = 1 / (uLS[k] + 1e-6);
+      return W;
+    }
+
+    // ── Power iteration eigensolver ──────────────────────────────────
+    // Finds lowest eigenvectors of (-Δ + V) via inverse power iteration
+    // (shifted: we apply (V_max*I - A) to find lowest eigenvalues of A)
+    // For simplicity: use power iteration on (σI - A) where σ >> λ_max
+    // Actually: find smallest eigenvalue via Rayleigh quotient + Gram-Schmidt deflation
+
+    function applyA(x, y) {
+      // y = (-Δ + V) x, Dirichlet BC
+      for (let i = 0; i < N; i++) {
+        for (let j = 0; j < N; j++) {
+          const idx = i*N+j;
+          if (i===0||i===N-1||j===0||j===N-1) { y[idx]=0; continue; }
+          const lap = x[(i-1)*N+j] + x[(i+1)*N+j] + x[i*N+j-1] + x[i*N+j+1] - 4*x[idx];
+          y[idx] = -lap + V[idx]*x[idx];
+        }
+      }
+    }
+
+    // σI - A  for shift-invert (we solve (σI - A)v = w via Gauss-Seidel)
+    // σ = strength * 1.1 + 5 so that (σ - λ_min) is large
+    function solveShiftedGS(rhs, sol, sigma, iters) {
+      for (let s = 0; s < iters; s++) {
+        for (let i = 1; i < N-1; i++) {
+          for (let j = 1; j < N-1; j++) {
+            const idx = i*N+j;
+            // (σ - V[idx]) * sol[idx] - (-Δ sol)[idx] = rhs[idx]
+            // (σ - V[idx] + 4) * sol[idx] = rhs[idx] + sol neighbours
+            const nbr = sol[(i-1)*N+j]+sol[(i+1)*N+j]+sol[i*N+j-1]+sol[i*N+j+1];
+            sol[idx] = (rhs[idx] + nbr) / (sigma - V[idx] + 4);
+          }
+        }
+      }
+    }
+
+    function dot(a, b) {
+      let s = 0;
+      for (let k = 0; k < N*N; k++) s += a[k]*b[k];
+      return s;
+    }
+
+    function norm(a) { return Math.sqrt(dot(a, a)); }
+
+    function normalize(a) {
+      const n = norm(a) || 1;
+      for (let k = 0; k < N*N; k++) a[k] /= n;
+    }
+
+    function subtractProjection(v, basis) {
+      for (const b of basis) {
+        const c = dot(v, b);
+        for (let k = 0; k < N*N; k++) v[k] -= c * b[k];
+      }
+    }
+
+    const NUM_MODES = 6;
+    const eigenvecs = [];
+    let eigenReady = false;
+
+    function computeEigenmodes() {
+      eigenReady = false;
+      eigenvecs.length = 0;
+      const sigma = strength * 1.2 + 6;
+      for (let m = 0; m < NUM_MODES; m++) {
+        // random init
+        const v = new Float32Array(N*N);
+        for (let k = 0; k < N*N; k++) v[k] = Math.random() - 0.5;
+        // zero boundary
+        for (let k = 0; k < N; k++) {
+          v[k]=v[(N-1)*N+k]=v[k*N]=v[k*N+N-1]=0;
+        }
+        normalize(v);
+
+        const sol = new Float32Array(N*N);
+        for (let iter = 0; iter < 60; iter++) {
+          // deflect against already-found modes
+          subtractProjection(v, eigenvecs);
+          normalize(v);
+          // shift-invert step
+          sol.set(v);
+          solveShiftedGS(v, sol, sigma, 20);
+          sol.set(sol); // sol is the new candidate
+          // zero boundary
+          for (let k = 0; k < N; k++) {
+            sol[k]=sol[(N-1)*N+k]=sol[k*N]=sol[k*N+N-1]=0;
+          }
+          subtractProjection(sol, eigenvecs);
+          normalize(sol);
+          v.set(sol);
+        }
+        eigenvecs.push(new Float32Array(v));
+      }
+      eigenReady = true;
+    }
+
+    // ── UI ───────────────────────────────────────────────────────────
+    const modeSlider     = document.getElementById('modeSlider');
+    const strengthSlider = document.getElementById('strengthSlider');
+    const corrSlider     = document.getElementById('corrSlider');
+    const modeVal        = document.getElementById('modeVal');
+    const strengthVal    = document.getElementById('strengthVal');
+    const corrVal        = document.getElementById('corrVal');
+    const statusEl       = document.getElementById('statusLine');
+
+    function updateLabels() {
+      modeVal.textContent     = 'n = ' + modeSlider.value;
+      strengthVal.textContent = parseFloat(strengthSlider.value).toFixed(1);
+      corrVal.textContent     = corrSlider.value + ' px';
+    }
+    updateLabels();
+
+    modeSlider.addEventListener('input', () => { updateLabels(); renderCurrent(); });
+    strengthSlider.addEventListener('input', updateLabels);
+    corrSlider.addEventListener('input', updateLabels);
+
+    function renderCurrent() {
+      if (!eigenReady) return;
+      const idx = parseInt(modeSlider.value) - 1;
+      const ef = eigenvecs[idx];
+      renderToCanvas(ef, canvasE, ctxE, offE, offCtxE, true);
+      const W = getLandscapeW();
+      renderToCanvas(W, canvasL, ctxL, offL, offCtxL, false);
+    }
+
+    function runAll() {
+      strength = parseFloat(strengthSlider.value);
+      corrLen  = parseInt(corrSlider.value);
+      statusEl.textContent = 'Generating potential…';
+      setTimeout(() => {
+        generatePotential();
+        statusEl.textContent = 'Solving landscape…';
+        setTimeout(() => {
+          computeLandscape();
+          statusEl.textContent = 'Computing eigenmodes (this may take a moment)…';
+          setTimeout(() => {
+            computeEigenmodes();
+            renderCurrent();
+            statusEl.textContent = 'Ready. Use the eigenmode slider to step through modes 1 – 6.';
+          }, 20);
+        }, 20);
+      }, 20);
+    }
+
+    document.getElementById('btnRegen').addEventListener('click', runAll);
+    runAll();
+  })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Simulations – Svitlana Mayboroda</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    main { display: block; }
+    .page-title { font-size: 1.3rem; margin: 16px 0 4px; }
+    .page-note { font-size: 0.88rem; color: #444; margin: 0 0 18px; line-height: 1.6; }
+    body.theme-dark .page-note { color: #c0c0d5; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div id="site-header"></div>
+
+    <h2 class="page-title">Interactive Simulations</h2>
+    <p class="page-note">
+      Browser-based simulations illustrating the mathematics of wave localization,
+      Anderson localization, and related phenomena from Svitlana Mayboroda's research.
+      Each runs entirely in your browser &mdash; no installation required.
+    </p>
+
+    <div class="sim-hub-grid">
+
+      <a href="sim-filoche.html" class="sim-hub-card">
+        <h3>Localization Peaks</h3>
+        <p>A 3D view of the localization landscape u(x,y) &mdash; the peaks are the quantum
+          wells where states concentrate. Red lines on the floor show the watershed partition,
+          dividing the domain into one region per peak. Inspired by Marcel Filoche&rsquo;s
+          original visualization.</p>
+        <span class="sim-hub-tag">Interactive &middot; 3D view &middot; Watershed</span>
+      </a>
+
+      <a href="simulation.html" class="sim-hub-card">
+        <h3>Wave Localization Explorer</h3>
+        <p>Explore the localization landscape W&nbsp;=&nbsp;1/u for the operator
+          &minus;&Delta;&nbsp;+&nbsp;V, watch wave pulses scatter and trap in a
+          disordered medium, and visualize the disorder potential itself.</p>
+        <span class="sim-hub-tag">Interactive &middot; 2D</span>
+      </a>
+
+      <a href="sim-eigenfunction.html" class="sim-hub-card">
+        <h3>Eigenfunction vs. Landscape</h3>
+        <p>Compare low-energy eigenfunctions of &minus;&Delta;&nbsp;+&nbsp;V (computed
+          via power iteration) side-by-side with the landscape prediction W&nbsp;=&nbsp;1/u.
+          The landscape pinpoints localization regions without solving the eigenvalue problem.</p>
+        <span class="sim-hub-tag">Interactive &middot; 2D &middot; Eigensolve</span>
+      </a>
+
+      <a href="sim-mobility.html" class="sim-hub-card">
+        <h3>Mobility Edge &amp; Percolation</h3>
+        <p>Drag an energy threshold and watch the landscape sublevel set grow from
+          isolated pockets into a percolating cluster crossing the domain &mdash;
+          a visual picture of the Anderson mobility edge transition.</p>
+        <span class="sim-hub-tag">Interactive &middot; 2D &middot; Percolation</span>
+      </a>
+
+      <a href="sim-led.html" class="sim-hub-card">
+        <h3>LED / Semiconductor Quantum Well</h3>
+        <p>Simulate a disordered InGaN-like alloy and see where electrons and holes
+          concentrate in the localization landscape. A temperature slider controls
+          the carrier density distribution.</p>
+        <span class="sim-hub-tag">Interactive &middot; 2D &middot; Semiconductor</span>
+      </a>
+
+      <a href="sim-cantor.html" class="sim-hub-card">
+        <h3>Cantor Set Construction</h3>
+        <p>Watch the Cantor set emerge through iterated removal, with a live fractal
+          dimension readout. Extend to 2D Cantor dust, or adjust the removal fraction.
+          Connected to the theory of sets with lower-dimensional boundaries.</p>
+        <span class="sim-hub-tag">Animated &middot; Fractal &middot; 1D / 2D</span>
+      </a>
+
+    </div>
+
+    <div id="site-footer"></div>
+  </div>
+
+  <script src="components.js"></script>
+</body>
+</html>

@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cantor Set Construction – Svitlana Mayboroda</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    main { display: block; }
+    .page-title { font-size: 1.3rem; margin: 16px 0 4px; }
+
+    .cantor-layout {
+      display: grid;
+      grid-template-columns: 1fr 240px;
+      gap: 16px;
+      align-items: start;
+      margin-top: 12px;
+    }
+    @media (max-width: 780px) { .cantor-layout { grid-template-columns: 1fr; } }
+
+    #cantorCanvas {
+      display: block;
+      width: 100%;
+      border: 1px solid #555;
+      background: #0a0a14;
+    }
+    body:not(.theme-dark) #cantorCanvas {
+      border-color: #aaa;
+      background: #fff;
+    }
+
+    .sim-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 0.84rem;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    .sim-panel label { display: block; margin-bottom: 2px; font-weight: bold; }
+    .sim-panel input[type=range] { width: 100%; }
+    .val-display { font-size: 0.75rem; color: #aaa; }
+    body:not(.theme-dark) .val-display { color: #777; }
+
+    .sim-btn {
+      display: block;
+      width: 100%;
+      padding: 6px 10px;
+      font-size: 0.8rem;
+      font-family: Arial, Helvetica, sans-serif;
+      border: 1px solid #666;
+      background: #1b1b2a;
+      color: #e2e2f0;
+      cursor: pointer;
+      text-align: left;
+      margin-bottom: 4px;
+    }
+    .sim-btn:hover { background: #2a2a40; }
+    .sim-btn.active { background: #9acbff; color: #111; border-color: #9acbff; font-weight: bold; }
+    body:not(.theme-dark) .sim-btn { background: #f0f0f0; color: #111; border-color: #aaa; }
+    body:not(.theme-dark) .sim-btn:hover { background: #e0e0f0; }
+    body:not(.theme-dark) .sim-btn.active { background: #00c; color: #fff; border-color: #00c; }
+
+    .dim-readout {
+      margin-top: 4px;
+      padding: 8px 10px;
+      font-size: 0.85rem;
+      font-family: 'Courier New', monospace;
+      background: #0d0d1e;
+      border: 1px solid #333;
+      color: #9acbff;
+    }
+    body:not(.theme-dark) .dim-readout {
+      background: #f5f5ff;
+      border-color: #ccc;
+      color: #00c;
+    }
+
+    .sim-legend {
+      font-size: 0.73rem;
+      color: #9090b0;
+      line-height: 1.5;
+    }
+    body:not(.theme-dark) .sim-legend { color: #555; }
+
+    .sim-info {
+      margin-top: 20px;
+      padding: 12px 14px;
+      border-left: 3px solid #4a4a6a;
+      background: #10101b;
+      font-size: 0.85rem;
+      color: #c0c0d5;
+      line-height: 1.65;
+    }
+    .sim-info h3 { margin: 0 0 6px; font-size: 0.92rem; color: #e2e2f0; }
+    .sim-info a  { color: #9acbff; }
+    .sim-info em { color: #9acbff; font-style: normal; font-weight: bold; }
+    body:not(.theme-dark) .sim-info { background: #fafafa; border-left-color: #aaa; color: #444; }
+    body:not(.theme-dark) .sim-info h3 { color: #111; }
+    body:not(.theme-dark) .sim-info a  { color: #00c; }
+    body:not(.theme-dark) .sim-info em { color: #005; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div id="site-header"></div>
+
+    <h2 class="page-title">Cantor Set Construction</h2>
+
+    <div class="cantor-layout">
+      <div>
+        <canvas id="cantorCanvas" width="600" height="400"></canvas>
+      </div>
+
+      <div class="sim-panel">
+        <div>
+          <label>Iterations <span class="val-display" id="depthVal"></span></label>
+          <input type="range" id="depthSlider" min="0" max="7" value="3" step="1">
+        </div>
+        <div>
+          <label>Removal fraction <span class="val-display" id="fracVal"></span></label>
+          <input type="range" id="fracSlider" min="10" max="60" value="33" step="1">
+        </div>
+
+        <div>
+          <label>Mode</label>
+          <button class="sim-btn active" id="btn1D">1D Cantor set</button>
+          <button class="sim-btn" id="btn2D">2D Cantor dust</button>
+        </div>
+
+        <button class="sim-btn" id="btnAnimate">&#9654; Animate</button>
+
+        <div class="dim-readout" id="dimReadout">dim = &mdash;</div>
+
+        <div class="sim-legend">
+          <strong>Tip:</strong> 1D is easier to read. In 2D at high iterations
+          (6&ndash;7), there are 2<sup>n</sup>&times;2<sup>n</sup> tiny squares &mdash;
+          they look like dust or noise, which is correct but hard to see.
+          Try 3&ndash;4 iterations first.<br><br>
+          Fractal dimension: log(2) / log(piece&nbsp;scale)<br>
+          Classic (remove 1/3): dim &asymp; 0.631.
+        </div>
+      </div>
+    </div>
+
+    <div class="sim-info">
+      <h3>What are you seeing?</h3>
+      <p>
+        Start with a line. Remove the middle third. You have two shorter lines.
+        Remove the middle third of each of those. Repeat &mdash; forever.
+        What you are left with is the <em>Cantor set</em>: infinitely many points,
+        yet with total length zero. It is more than a finite collection of dots
+        (it contains uncountably many points), but &ldquo;thinner&rdquo; than
+        any interval. Its <strong>fractal dimension</strong> &mdash; around 0.63
+        for the classic 1/3-removal case &mdash; is a precise way of measuring
+        how much &ldquo;stuff&rdquo; is left.
+      </p>
+      <p>
+        <strong>Why does the 2D view look like scattered dots at high iterations?</strong>
+        At 7 iterations, there are 2<sup>7</sup>&nbsp;=&nbsp;128 tiny intervals in each direction,
+        giving 128&times;128&nbsp;=&nbsp;16,384 squares, each occupying less than 0.1% of the area.
+        The set is genuinely becoming &ldquo;dust&rdquo;, and the screen just cannot show how fine it is.
+        Try 3&ndash;4 iterations to see the structure clearly; use the Animate button to
+        watch it appear step by step.
+      </p>
+      <p>
+        <strong>Why does this matter for mathematics?</strong>
+        Elliptic equations (like heat flow or electrostatics) are well understood when the
+        boundary of the domain is a smooth curve or surface. But what if the boundary
+        is a fractal &mdash; or a Cantor-like set with holes at every scale?
+        Guy David, Joseph Feneuil, and Svitlana Mayboroda built the entire theory
+        of harmonic measure and Green functions for exactly that situation.
+        See: <a href="https://arxiv.org/abs/2007.01745" target="_blank" rel="noopener noreferrer">
+        David, Feneuil &amp; Mayboroda, <em>Ast&eacute;risque</em> 2023</a>.
+      </p>
+    </div>
+
+    <div id="site-footer"></div>
+  </div>
+
+  <script src="components.js"></script>
+  <script>
+  (function () {
+    const canvas = document.getElementById('cantorCanvas');
+    const ctx    = canvas.getContext('2d');
+
+    let mode     = '1d'; // '1d' | '2d'
+    let depth    = 3;
+    let frac     = 0.33;
+    let animating = false;
+    let animFrame = null;
+
+    // ── Compute Cantor intervals (1D) ────────────────────────────────
+    // Returns array of [lo, hi] intervals (normalized 0..1)
+    function cantorIntervals(depth, frac) {
+      let intervals = [[0, 1]];
+      for (let d = 0; d < depth; d++) {
+        const next = [];
+        for (const [lo, hi] of intervals) {
+          const len = hi - lo;
+          const gap = len * frac;
+          const left  = (1 - frac) / 2;
+          next.push([lo, lo + len * left]);
+          next.push([lo + len * left + gap, hi - len * left]);
+        }
+        intervals = next;
+      }
+      return intervals;
+    }
+
+    // ── Drawing ──────────────────────────────────────────────────────
+    function isDark() { return document.body.classList.contains('theme-dark'); }
+
+    const LEVEL_COLORS_DARK = [
+      '#9acbff', '#7baee8', '#5d91d1', '#4074ba', '#2857a3',
+      '#4a8fe0', '#6bb0f5', '#8dcfff',
+    ];
+    const LEVEL_COLORS_LIGHT = [
+      '#1a3caa', '#2850c8', '#3064e6', '#3878ff', '#508cff',
+      '#3064e6', '#2850c8', '#1a3caa',
+    ];
+
+    function drawCantor1D(targetDepth) {
+      const W = canvas.width, H = canvas.height;
+      ctx.clearRect(0, 0, W, H);
+
+      const bg = isDark() ? '#0a0a14' : '#ffffff';
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
+
+      // margin
+      const mx = 32, my = 30;
+      const drawW = W - 2*mx;
+      const rowH  = Math.max(6, Math.floor((H - 2*my) / (targetDepth + 1)));
+      const barH  = Math.max(3, rowH - 6);
+
+      const colors = isDark() ? LEVEL_COLORS_DARK : LEVEL_COLORS_LIGHT;
+
+      for (let d = 0; d <= targetDepth; d++) {
+        const intervals = cantorIntervals(d, frac);
+        const y = my + d * rowH;
+        ctx.fillStyle = colors[d % colors.length];
+        for (const [lo, hi] of intervals) {
+          const x1 = mx + lo * drawW;
+          const x2 = mx + hi * drawW;
+          ctx.fillRect(x1, y, Math.max(x2 - x1, 0.5), barH);
+        }
+      }
+
+      // Label iterations on the left
+      ctx.font = '11px Arial, sans-serif';
+      ctx.fillStyle = isDark() ? '#6060a0' : '#888';
+      ctx.textAlign = 'right';
+      for (let d = 0; d <= targetDepth; d++) {
+        const y = my + d * rowH + barH / 2 + 4;
+        ctx.fillText('n=' + d, mx - 4, y);
+      }
+
+      // dimension annotation at bottom
+      const pieces = 2 ** targetDepth;
+      const dim = targetDepth === 0 ? 1 : Math.log(pieces) / Math.log(1/frac * (1-(1-frac)/2) / ((1-frac)/2) );
+      // simpler: dim = log(2^d) / log(scale^-d) = log(2)/log(1/(segment_scale))
+      // each step: 2 pieces each of length (1-frac)/2 * original
+      const segScale = (1 - frac) / 2;
+      const fracDim = Math.log(2) / Math.log(1 / segScale);
+
+      document.getElementById('dimReadout').innerHTML =
+        'dim = log(2) / log(1/r) = <strong>' + fracDim.toFixed(4) + '</strong>';
+    }
+
+    function drawCantor2D(targetDepth) {
+      const W = canvas.width, H = canvas.height;
+      ctx.clearRect(0, 0, W, H);
+      const bg = isDark() ? '#0a0a14' : '#ffffff';
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
+
+      const intervals = cantorIntervals(targetDepth, frac);
+      const mx = 32, my = 32;
+      const drawW = W - 2*mx, drawH = H - 2*my;
+
+      const fillColor = isDark() ? '#9acbff' : '#1a3caa';
+      ctx.fillStyle = fillColor;
+
+      for (const [lox, hix] of intervals) {
+        for (const [loy, hiy] of intervals) {
+          const x1 = mx + lox * drawW;
+          const y1 = my + loy * drawH;
+          const x2 = mx + hix * drawW;
+          const y2 = my + hiy * drawH;
+          // Enforce a minimum 2px size so dots stay visible at high iterations
+          ctx.fillRect(x1, y1, Math.max(x2 - x1, 2), Math.max(y2 - y1, 2));
+        }
+      }
+
+      // fractal dimension
+      const segScale = (1 - frac) / 2;
+      const fracDim = 2 * Math.log(2) / Math.log(1 / segScale);
+      document.getElementById('dimReadout').innerHTML =
+        'dim = 2\u00D7log(2)/log(1/r) = <strong>' + fracDim.toFixed(4) + '</strong>';
+    }
+
+    function draw(d) {
+      if (mode === '1d') drawCantor1D(d !== undefined ? d : depth);
+      else               drawCantor2D(d !== undefined ? d : depth);
+    }
+
+    // ── Animation ────────────────────────────────────────────────────
+    function stopAnim() {
+      animating = false;
+      if (animFrame) { cancelAnimationFrame(animFrame); animFrame = null; }
+      document.getElementById('btnAnimate').textContent = '\u25B6 Animate';
+    }
+
+    function startAnim() {
+      animating = true;
+      document.getElementById('btnAnimate').textContent = '\u23F9 Stop';
+      let d = 0;
+      let lastTime = 0;
+      const maxDepth = parseInt(document.getElementById('depthSlider').value);
+      const stepMs = 700;
+
+      function step(ts) {
+        if (!animating) return;
+        if (ts - lastTime > stepMs) {
+          draw(d);
+          lastTime = ts;
+          d++;
+          if (d > maxDepth) { stopAnim(); draw(maxDepth); return; }
+        }
+        animFrame = requestAnimationFrame(step);
+      }
+      animFrame = requestAnimationFrame(step);
+    }
+
+    // ── Controls ─────────────────────────────────────────────────────
+    const depthSlider = document.getElementById('depthSlider');
+    const fracSlider  = document.getElementById('fracSlider');
+    const depthVal    = document.getElementById('depthVal');
+    const fracVal     = document.getElementById('fracVal');
+
+    function updateLabels() {
+      depth = parseInt(depthSlider.value);
+      frac  = parseInt(fracSlider.value) / 100;
+      depthVal.textContent = depth;
+      fracVal.textContent  = (frac * 100).toFixed(0) + '%';
+    }
+
+    depthSlider.addEventListener('input', () => { updateLabels(); stopAnim(); draw(); });
+    fracSlider.addEventListener('input',  () => { updateLabels(); stopAnim(); draw(); });
+
+    document.getElementById('btn1D').addEventListener('click', () => {
+      mode = '1d';
+      document.getElementById('btn1D').classList.add('active');
+      document.getElementById('btn2D').classList.remove('active');
+      stopAnim(); draw();
+    });
+    document.getElementById('btn2D').addEventListener('click', () => {
+      mode = '2d';
+      document.getElementById('btn2D').classList.add('active');
+      document.getElementById('btn1D').classList.remove('active');
+      stopAnim(); draw();
+    });
+
+    document.getElementById('btnAnimate').addEventListener('click', () => {
+      if (animating) stopAnim();
+      else           startAnim();
+    });
+
+    // Redraw on theme change (listen for class changes on body)
+    const observer = new MutationObserver(() => draw());
+    observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+
+    updateLabels();
+    draw();
+  })();
+  </script>
+</body>
+</html>

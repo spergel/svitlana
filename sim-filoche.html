@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Localization Peaks – Svitlana Mayboroda</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    main { display: block; }
+    .page-title { font-size: 1.3rem; margin: 16px 0 4px; }
+
+    .sim-layout {
+      display: grid;
+      grid-template-columns: 1fr 240px;
+      gap: 16px;
+      align-items: start;
+      margin-top: 12px;
+    }
+    @media (max-width: 780px) { .sim-layout { grid-template-columns: 1fr; } }
+
+    #simCanvas {
+      display: block;
+      width: 100%;
+      background: #04040d;
+      border: 1px solid #555;
+    }
+    body:not(.theme-dark) #simCanvas { border-color: #aaa; }
+
+    .sim-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 0.84rem;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    .sim-panel label { display: block; margin-bottom: 2px; font-weight: bold; }
+    .sim-panel input[type=range] { width: 100%; }
+    .val-display { font-size: 0.75rem; color: #aaa; }
+    body:not(.theme-dark) .val-display { color: #777; }
+
+    .sim-btn {
+      display: block;
+      width: 100%;
+      padding: 6px 10px;
+      font-size: 0.8rem;
+      font-family: Arial, Helvetica, sans-serif;
+      border: 1px solid #666;
+      background: #1b1b2a;
+      color: #e2e2f0;
+      cursor: pointer;
+      text-align: left;
+      margin-bottom: 4px;
+    }
+    .sim-btn:hover { background: #2a2a40; }
+    body:not(.theme-dark) .sim-btn { background: #f0f0f0; color: #111; border-color: #aaa; }
+    body:not(.theme-dark) .sim-btn:hover { background: #e0e0f0; }
+
+    .peaks-readout {
+      padding: 7px 10px;
+      font-size: 0.82rem;
+      font-family: 'Courier New', monospace;
+      background: #0d0d1e;
+      border: 1px solid #333;
+      color: #9acbff;
+    }
+    body:not(.theme-dark) .peaks-readout { background: #f5f5ff; border-color: #ccc; color: #00c; }
+
+    .sim-legend {
+      font-size: 0.73rem;
+      color: #9090b0;
+      line-height: 1.55;
+    }
+    body:not(.theme-dark) .sim-legend { color: #555; }
+
+    .status-line {
+      font-size: 0.72rem;
+      color: #777;
+      margin-top: 4px;
+      min-height: 1em;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .sim-info {
+      margin-top: 20px;
+      padding: 12px 14px;
+      border-left: 3px solid #4a4a6a;
+      background: #10101b;
+      font-size: 0.85rem;
+      color: #c0c0d5;
+      line-height: 1.65;
+    }
+    .sim-info h3 { margin: 0 0 6px; font-size: 0.92rem; color: #e2e2f0; }
+    .sim-info a  { color: #9acbff; }
+    .sim-info em { color: #9acbff; font-style: normal; font-weight: bold; }
+    body:not(.theme-dark) .sim-info { background: #fafafa; border-left-color: #aaa; color: #444; }
+    body:not(.theme-dark) .sim-info h3 { color: #111; }
+    body:not(.theme-dark) .sim-info a  { color: #00c; }
+    body:not(.theme-dark) .sim-info em { color: #005; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div id="site-header"></div>
+
+    <h2 class="page-title">Localization Peaks</h2>
+
+    <div class="sim-layout">
+      <div>
+        <canvas id="simCanvas" width="460" height="300"></canvas>
+        <div class="status-line" id="statusLine">Initializing&hellip;</div>
+      </div>
+
+      <div class="sim-panel">
+        <div>
+          <label>Disorder strength <span class="val-display" id="strengthVal"></span></label>
+          <input type="range" id="strengthSlider" min="2" max="20" value="9" step="0.5">
+        </div>
+        <div>
+          <label>Correlation length <span class="val-display" id="corrVal"></span></label>
+          <input type="range" id="corrSlider" min="3" max="20" value="10" step="1">
+        </div>
+        <div>
+          <label>Peak height scale <span class="val-display" id="heightVal"></span></label>
+          <input type="range" id="heightSlider" min="20" max="120" value="60" step="5">
+        </div>
+        <button class="sim-btn" id="btnRegen">&#8635; New disorder</button>
+        <div class="peaks-readout" id="peaksReadout">Peaks: &mdash;</div>
+        <div class="sim-legend">
+          Color: blue (low) &rarr; cyan &rarr; green &rarr; yellow &rarr; red (peak).<br>
+          <span style="color:#ff4444;">&#8212;</span> Red lines: watershed partition &mdash;
+          each region contains exactly one localization peak.
+        </div>
+      </div>
+    </div>
+
+    <div class="sim-info">
+      <h3>What are you seeing?</h3>
+      <p>
+        This is the <em>localization landscape</em> u(x,y) &mdash;
+        the solution to <strong>(&minus;&Delta;&nbsp;+&nbsp;V)u&nbsp;=&nbsp;1</strong> &mdash;
+        rendered as a 3D surface. The <strong>peaks</strong> (red tips) are where u is largest,
+        which means W&nbsp;=&nbsp;1/u is smallest: these are the <strong>wells</strong> where
+        quantum states concentrate.
+      </p>
+      <p>
+        In plain terms: imagine the floor is covered in hills and valleys shaped by the disorder.
+        A ball dropped anywhere will roll into one of the valleys and stay there.
+        Quantum particles do the same &mdash; they get trapped in these wells and
+        <strong>cannot escape</strong>, even though they are waves that normally spread freely.
+        This is <em>Anderson localization</em>.
+      </p>
+      <p>
+        The <span style="color:#ff6666;">red lines</span> on the floor are the
+        <strong>watershed partition</strong>: they divide the domain into regions,
+        each owned by one peak. Every quantum state &ldquo;belongs to&rdquo; the nearest peak.
+        This is the key result of
+        <a href="https://www.pnas.org/doi/10.1073/pnas.1120432109" target="_blank" rel="noopener noreferrer">
+        Filoche &amp; Mayboroda, <em>PNAS</em> 2012</a>.
+      </p>
+    </div>
+
+    <div id="site-footer"></div>
+  </div>
+
+  <script src="components.js"></script>
+  <script>
+  (function () {
+    const N  = 32; // grid size (fast enough for 3D rendering)
+    const CW = 460, CH = 300; // canvas logical size
+    const TW = 7, TH = 3.5;  // isometric tile half-widths
+    const CX = CW / 2, CY = 90; // isometric center
+
+    const canvas = document.getElementById('simCanvas');
+    const ctx    = canvas.getContext('2d');
+    canvas.width  = CW;
+    canvas.height = CH;
+
+    // ── Jet colormap ─────────────────────────────────────────────────
+    const CMAP_JET = [
+      [  0,   0, 100],
+      [  0,   0, 200],
+      [  0, 140, 255],
+      [  0, 230, 230],
+      [  0, 200,   0],
+      [180, 240,   0],
+      [255, 220,   0],
+      [255, 120,   0],
+      [230,   0,   0],
+      [160,   0,  60],
+    ];
+    function jetColor(t) {
+      t = Math.max(0, Math.min(1, t));
+      const pos = t * (CMAP_JET.length - 1);
+      const lo = Math.floor(pos), hi = Math.min(lo + 1, CMAP_JET.length - 1);
+      const f = pos - lo;
+      const a = CMAP_JET[lo], b = CMAP_JET[hi];
+      return [
+        Math.round(a[0] + f * (b[0] - a[0])),
+        Math.round(a[1] + f * (b[1] - a[1])),
+        Math.round(a[2] + f * (b[2] - a[2])),
+      ];
+    }
+    function rgbStr(r, g, b, a) {
+      return a !== undefined
+        ? `rgba(${r},${g},${b},${a})`
+        : `rgb(${r},${g},${b})`;
+    }
+
+    // ── Isometric projection ─────────────────────────────────────────
+    function project(i, j, h) {
+      return [
+        CX + (j - i) * TW,
+        CY + (j + i) * TH - h,
+      ];
+    }
+
+    // ── Disorder potential ───────────────────────────────────────────
+    let V = new Float32Array(N * N);
+    let strength = 9, corrLen = 10;
+
+    function generatePotential() {
+      V.fill(0);
+      for (let m = 0; m < 40; m++) {
+        const kx  = (2 * Math.PI / corrLen) * (Math.random() * 2 - 1);
+        const ky  = (2 * Math.PI / corrLen) * (Math.random() * 2 - 1);
+        const phi = Math.random() * 2 * Math.PI;
+        const amp = Math.random();
+        for (let i = 0; i < N; i++)
+          for (let j = 0; j < N; j++)
+            V[i * N + j] += amp * Math.cos(kx * i + ky * j + phi);
+      }
+      let mn = V[0], mx = V[0];
+      for (let k = 1; k < N * N; k++) { if (V[k] < mn) mn = V[k]; if (V[k] > mx) mx = V[k]; }
+      const rng = mx - mn || 1;
+      for (let k = 0; k < N * N; k++) V[k] = strength * (V[k] - mn) / rng;
+    }
+
+    // ── Landscape solver ─────────────────────────────────────────────
+    let uLS = new Float32Array(N * N).fill(0.5);
+
+    function solveLandscape(iters) {
+      for (let s = 0; s < iters; s++) {
+        for (let i = 0; i < N; i++) {
+          const im = (i - 1 + N) % N, ip = (i + 1) % N;
+          for (let j = 0; j < N; j++) {
+            const jm = (j - 1 + N) % N, jp = (j + 1) % N;
+            const nbr = uLS[im*N+j] + uLS[ip*N+j] + uLS[i*N+jm] + uLS[i*N+jp];
+            uLS[i*N+j] = (1 + nbr) / (4 + V[i*N+j]);
+          }
+        }
+      }
+    }
+
+    // ── Watershed partition (multi-source BFS from peaks of u) ───────
+    let region = new Int32Array(N * N).fill(-1);
+    let numPeaks = 0;
+
+    function computeWatershed() {
+      region.fill(-1);
+      numPeaks = 0;
+      const queue = [];
+
+      for (let i = 1; i < N - 1; i++) {
+        for (let j = 1; j < N - 1; j++) {
+          const k = i * N + j;
+          const v = uLS[k];
+          if (v > uLS[(i-1)*N+j] && v > uLS[(i+1)*N+j] &&
+              v > uLS[k-1]        && v > uLS[k+1]) {
+            region[k] = numPeaks++;
+            queue.push(k);
+          }
+        }
+      }
+
+      // BFS: flood from all peaks simultaneously
+      let head = 0;
+      while (head < queue.length) {
+        const k = queue[head++];
+        const label = region[k];
+        const i = Math.floor(k / N), j = k % N;
+        const nbrs = [
+          i > 0     ? (i-1)*N+j : -1,
+          i < N-1   ? (i+1)*N+j : -1,
+          j > 0     ? k-1       : -1,
+          j < N-1   ? k+1       : -1,
+        ];
+        for (const nb of nbrs) {
+          if (nb >= 0 && region[nb] === -1) {
+            region[nb] = label;
+            queue.push(nb);
+          }
+        }
+      }
+      // Fill any boundary/unlabeled cells
+      for (let k = 0; k < N * N; k++) {
+        if (region[k] === -1) region[k] = 0;
+      }
+    }
+
+    // ── Render ───────────────────────────────────────────────────────
+    function render(heightScale) {
+      ctx.clearRect(0, 0, CW, CH);
+      ctx.fillStyle = '#04040d';
+      ctx.fillRect(0, 0, CW, CH);
+
+      // Normalize u for coloring
+      let uMin = uLS[0], uMax = uLS[0];
+      for (let k = 1; k < N * N; k++) {
+        if (uLS[k] < uMin) uMin = uLS[k];
+        if (uLS[k] > uMax) uMax = uLS[k];
+      }
+      const uRng = uMax - uMin || 1;
+      const norm = (k) => (uLS[k] - uMin) / uRng;
+
+      // Sort cells by painter's depth (i+j ascending)
+      const cells = [];
+      for (let i = 0; i < N - 1; i++)
+        for (let j = 0; j < N - 1; j++)
+          cells.push(i * N + j);
+      cells.sort((a, b) => {
+        const ia = Math.floor(a / N), ja = a % N;
+        const ib = Math.floor(b / N), jb = b % N;
+        return (ia + ja) - (ib + jb);
+      });
+
+      // Draw surface quads
+      for (const k of cells) {
+        const i = Math.floor(k / N), j = k % N;
+        // Average u for this quad
+        const avgU = (uLS[k] + uLS[k+1] + uLS[(i+1)*N+j] + uLS[(i+1)*N+j+1]) / 4;
+        const t = (avgU - uMin) / uRng;
+
+        const [r, g, b] = jetColor(t);
+        // Slightly darken the "side faces" for depth feeling
+        const shade = 0.7 + 0.3 * t;
+
+        const [x0, y0] = project(i,   j,   norm(k)           * heightScale);
+        const [x1, y1] = project(i,   j+1, norm(k+1)         * heightScale);
+        const [x2, y2] = project(i+1, j+1, norm((i+1)*N+j+1) * heightScale);
+        const [x3, y3] = project(i+1, j,   norm((i+1)*N+j)   * heightScale);
+
+        ctx.fillStyle = rgbStr(
+          Math.round(r * shade),
+          Math.round(g * shade),
+          Math.round(b * shade)
+        );
+        ctx.beginPath();
+        ctx.moveTo(x0, y0);
+        ctx.lineTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.lineTo(x3, y3);
+        ctx.closePath();
+        ctx.fill();
+      }
+
+      // Draw watershed boundary lines (at low height = near floor, visible between peaks)
+      ctx.strokeStyle = '#ee2222';
+      ctx.lineWidth = 1.4;
+      for (let i = 0; i < N - 1; i++) {
+        for (let j = 0; j < N - 1; j++) {
+          const k = i * N + j;
+          // Horizontal boundary: between row i and i+1
+          if (region[k] !== region[(i+1)*N+j]) {
+            const h0 = Math.min(norm(k), norm((i+1)*N+j)) * heightScale * 0.12;
+            const h1 = Math.min(norm(k+1), norm((i+1)*N+j+1)) * heightScale * 0.12;
+            const [x0, y0] = project(i+1, j,   h0);
+            const [x1, y1] = project(i+1, j+1, h1);
+            ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke();
+          }
+          // Vertical boundary: between col j and j+1
+          if (region[k] !== region[k+1]) {
+            const h0 = Math.min(norm(k), norm(k+1)) * heightScale * 0.12;
+            const h1 = Math.min(norm((i+1)*N+j), norm((i+1)*N+j+1)) * heightScale * 0.12;
+            const [x0, y0] = project(i,   j+1, h0);
+            const [x1, y1] = project(i+1, j+1, h1);
+            ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke();
+          }
+        }
+      }
+
+      // Mark peak locations with a small bright dot
+      for (let i = 1; i < N - 1; i++) {
+        for (let j = 1; j < N - 1; j++) {
+          const k = i * N + j;
+          if (uLS[k] > uLS[(i-1)*N+j] && uLS[k] > uLS[(i+1)*N+j] &&
+              uLS[k] > uLS[k-1]        && uLS[k] > uLS[k+1]) {
+            const [sx, sy] = project(i, j, norm(k) * heightScale);
+            ctx.fillStyle = 'rgba(255,255,220,0.9)';
+            ctx.beginPath();
+            ctx.arc(sx, sy, 2.5, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+      }
+    }
+
+    // ── Controls ─────────────────────────────────────────────────────
+    const strengthSlider = document.getElementById('strengthSlider');
+    const corrSlider     = document.getElementById('corrSlider');
+    const heightSlider   = document.getElementById('heightSlider');
+    const strengthVal    = document.getElementById('strengthVal');
+    const corrVal        = document.getElementById('corrVal');
+    const heightVal      = document.getElementById('heightVal');
+    const statusEl       = document.getElementById('statusLine');
+    const peaksReadout   = document.getElementById('peaksReadout');
+
+    function updateLabels() {
+      strengthVal.textContent = parseFloat(strengthSlider.value).toFixed(1);
+      corrVal.textContent     = corrSlider.value + ' px';
+      heightVal.textContent   = heightSlider.value;
+    }
+
+    heightSlider.addEventListener('input', () => {
+      updateLabels();
+      render(parseInt(heightSlider.value));
+    });
+    strengthSlider.addEventListener('input', updateLabels);
+    corrSlider.addEventListener('input', updateLabels);
+
+    function runAll() {
+      strength = parseFloat(strengthSlider.value);
+      corrLen  = parseInt(corrSlider.value);
+      updateLabels();
+      statusEl.textContent = 'Generating disorder…';
+      setTimeout(() => {
+        generatePotential();
+        statusEl.textContent = 'Solving landscape…';
+        uLS.fill(0.5);
+        setTimeout(() => {
+          solveLandscape(600);
+          statusEl.textContent = 'Computing partition…';
+          setTimeout(() => {
+            computeWatershed();
+            render(parseInt(heightSlider.value));
+            peaksReadout.textContent = 'Peaks (localization wells): ' + numPeaks;
+            statusEl.textContent = numPeaks + ' localization wells found. Drag "Peak height scale" to reshape the view.';
+          }, 20);
+        }, 20);
+      }, 20);
+    }
+
+    document.getElementById('btnRegen').addEventListener('click', runAll);
+    updateLabels();
+    runAll();
+  })();
+  </script>
+</body>
+</html>

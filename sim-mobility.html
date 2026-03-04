@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mobility Edge &amp; Percolation – Svitlana Mayboroda</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    main { display: block; }
+    .page-title { font-size: 1.3rem; margin: 16px 0 4px; }
+
+    .sim-layout {
+      display: grid;
+      grid-template-columns: 1fr 240px;
+      gap: 16px;
+      align-items: start;
+      margin-top: 12px;
+    }
+    @media (max-width: 780px) { .sim-layout { grid-template-columns: 1fr; } }
+
+    #simCanvas {
+      display: block;
+      width: 100%;
+      aspect-ratio: 1;
+      image-rendering: pixelated;
+      border: 1px solid #555;
+    }
+    body:not(.theme-dark) #simCanvas { border-color: #aaa; }
+
+    .sim-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 0.84rem;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    .sim-panel label { display: block; margin-bottom: 2px; font-weight: bold; }
+    .sim-panel input[type=range] { width: 100%; }
+    .val-display { font-size: 0.75rem; color: #aaa; }
+    body:not(.theme-dark) .val-display { color: #777; }
+
+    .sim-btn {
+      display: block;
+      width: 100%;
+      padding: 6px 10px;
+      font-size: 0.8rem;
+      font-family: Arial, Helvetica, sans-serif;
+      border: 1px solid #666;
+      background: #1b1b2a;
+      color: #e2e2f0;
+      cursor: pointer;
+      text-align: left;
+      margin-bottom: 4px;
+    }
+    .sim-btn:hover { background: #2a2a40; }
+    body:not(.theme-dark) .sim-btn { background: #f0f0f0; color: #111; border-color: #aaa; }
+    body:not(.theme-dark) .sim-btn:hover { background: #e0e0f0; }
+
+    .percolation-badge {
+      margin-top: 6px;
+      padding: 8px 10px;
+      font-size: 0.82rem;
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: bold;
+      text-align: center;
+      border: 1px solid #666;
+    }
+    .badge-localized   { background: #1a1a30; color: #7799ff; border-color: #445; }
+    .badge-percolating { background: #0a2a0a; color: #44ee88; border-color: #2a5a2a; }
+    body:not(.theme-dark) .badge-localized   { background: #eef; color: #006; border-color: #99b; }
+    body:not(.theme-dark) .badge-percolating { background: #efe; color: #040; border-color: #4a8; }
+
+    .sim-legend {
+      margin-top: 6px;
+      font-size: 0.73rem;
+      color: #9090b0;
+      line-height: 1.5;
+    }
+    body:not(.theme-dark) .sim-legend { color: #555; }
+
+    .status-line {
+      font-size: 0.72rem;
+      color: #777;
+      margin-top: 4px;
+      min-height: 1em;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .sim-info {
+      margin-top: 20px;
+      padding: 12px 14px;
+      border-left: 3px solid #4a4a6a;
+      background: #10101b;
+      font-size: 0.85rem;
+      color: #c0c0d5;
+      line-height: 1.65;
+    }
+    .sim-info h3 { margin: 0 0 6px; font-size: 0.92rem; color: #e2e2f0; }
+    .sim-info a  { color: #9acbff; }
+    .sim-info em { color: #9acbff; font-style: normal; font-weight: bold; }
+    body:not(.theme-dark) .sim-info { background: #fafafa; border-left-color: #aaa; color: #444; }
+    body:not(.theme-dark) .sim-info h3 { color: #111; }
+    body:not(.theme-dark) .sim-info a  { color: #00c; }
+    body:not(.theme-dark) .sim-info em { color: #005; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div id="site-header"></div>
+
+    <h2 class="page-title">Mobility Edge &amp; Percolation</h2>
+
+    <div class="sim-layout">
+      <div>
+        <canvas id="simCanvas" width="128" height="128"></canvas>
+        <div class="status-line" id="statusLine">Initializing&hellip;</div>
+      </div>
+
+      <div class="sim-panel">
+        <div>
+          <label>Energy threshold E <span class="val-display" id="energyVal"></span></label>
+          <input type="range" id="energySlider" min="0" max="100" value="30" step="1">
+        </div>
+        <div>
+          <label>Disorder strength <span class="val-display" id="strengthVal"></span></label>
+          <input type="range" id="strengthSlider" min="1" max="20" value="8" step="0.5">
+        </div>
+        <div>
+          <label>Correlation length <span class="val-display" id="corrVal"></span></label>
+          <input type="range" id="corrSlider" min="4" max="40" value="16" step="1">
+        </div>
+        <button class="sim-btn" id="btnRegen">&#8635; New disorder</button>
+        <div class="percolation-badge badge-localized" id="percBadge">Localized</div>
+        <div class="sim-legend">
+          <strong>Dark</strong> regions: W(x,y) &lt; E (accessible sublevel set).<br>
+          <strong>Bright</strong> regions: W(x,y) &ge; E (barriers).<br>
+          When dark regions span the domain, the system percolates.
+        </div>
+      </div>
+    </div>
+
+    <div class="sim-info">
+      <h3>What are you seeing?</h3>
+      <p>
+        The <em>localization landscape</em> W&nbsp;=&nbsp;1/u acts as an effective potential.
+        Quantum states with energy E are confined to regions where W(x,y)&nbsp;&lt;&nbsp;E &mdash;
+        the <strong>sublevel set</strong> highlighted in this simulation.
+      </p>
+      <p>
+        At low energies, this set consists of isolated pockets: states are <strong>localized</strong>.
+        As E increases, the pockets grow and eventually merge into a path that crosses the entire domain.
+        This is the <em>Anderson mobility edge</em> &mdash; the critical energy at which the system
+        transitions from localized to extended (delocalized) states.
+      </p>
+      <p>
+        Mayboroda and collaborators proved that this transition is precisely a
+        <strong>percolation transition</strong> in the sublevel sets of W.
+        See: <a href="https://arxiv.org/abs/2309.03813" target="_blank" rel="noopener noreferrer">
+        Filoche, Mayboroda, Pelletier &amp; Delande, 2023</a>.
+      </p>
+    </div>
+
+    <div id="site-footer"></div>
+  </div>
+
+  <script src="components.js"></script>
+  <script>
+  (function () {
+    const N = 128;
+    const canvas = document.getElementById('simCanvas');
+    const ctx = canvas.getContext('2d');
+    const offCanvas = document.createElement('canvas');
+    offCanvas.width = offCanvas.height = N;
+    const offCtx = offCanvas.getContext('2d');
+
+    let V   = new Float32Array(N * N);
+    let uLS = new Float32Array(N * N).fill(0.5);
+    let W   = new Float32Array(N * N);
+    let strength = 8, corrLen = 16;
+
+    // ── Potential ────────────────────────────────────────────────────
+    function generatePotential() {
+      V.fill(0);
+      for (let m = 0; m < 50; m++) {
+        const kx  = (2*Math.PI/corrLen)*(Math.random()*2-1);
+        const ky  = (2*Math.PI/corrLen)*(Math.random()*2-1);
+        const phi = Math.random()*2*Math.PI;
+        const amp = Math.random();
+        for (let i = 0; i < N; i++)
+          for (let j = 0; j < N; j++)
+            V[i*N+j] += amp*Math.cos(kx*i+ky*j+phi);
+      }
+      let mn=V[0], mx=V[0];
+      for (let k=1;k<N*N;k++){if(V[k]<mn)mn=V[k];if(V[k]>mx)mx=V[k];}
+      const rng=mx-mn||1;
+      for (let k=0;k<N*N;k++) V[k]=strength*(V[k]-mn)/rng;
+    }
+
+    // ── Landscape ────────────────────────────────────────────────────
+    function solveLandscape(iters) {
+      for (let s=0;s<iters;s++) {
+        for (let i=0;i<N;i++) {
+          const im=(i-1+N)%N, ip=(i+1)%N;
+          for (let j=0;j<N;j++) {
+            const jm=(j-1+N)%N, jp=(j+1)%N;
+            const nbr=uLS[im*N+j]+uLS[ip*N+j]+uLS[i*N+jm]+uLS[i*N+jp];
+            uLS[i*N+j]=(1+nbr)/(4+V[i*N+j]);
+          }
+        }
+      }
+    }
+
+    function computeW() {
+      uLS.fill(0.5);
+      solveLandscape(800);
+      let mn=Infinity, mx=-Infinity;
+      for (let k=0;k<N*N;k++){
+        W[k]=1/(uLS[k]+1e-6);
+        if(W[k]<mn)mn=W[k]; if(W[k]>mx)mx=W[k];
+      }
+      // normalize W to [0,1] for the slider to make sense
+      const rng=mx-mn||1;
+      for(let k=0;k<N*N;k++) W[k]=(W[k]-mn)/rng;
+    }
+
+    // ── Percolation check (union-find flood fill top-to-bottom) ──────
+    function checkPercolation(threshold) {
+      // BFS from all top-row pixels below threshold
+      const visited = new Uint8Array(N*N);
+      const queue = [];
+      for (let j=0;j<N;j++) {
+        if (W[j] < threshold) { visited[j]=1; queue.push(j); }
+      }
+      let head = 0;
+      while (head < queue.length) {
+        const idx = queue[head++];
+        const i = Math.floor(idx/N), j = idx%N;
+        const nbrs = [
+          (i>0)   ? (i-1)*N+j : -1,
+          (i<N-1) ? (i+1)*N+j : -1,
+          (j>0)   ? i*N+j-1   : -1,
+          (j<N-1) ? i*N+j+1   : -1,
+        ];
+        for (const n of nbrs) {
+          if (n>=0 && !visited[n] && W[n]<threshold) {
+            visited[n]=1; queue.push(n);
+          }
+        }
+      }
+      // check if any bottom-row pixel was reached
+      for (let j=0;j<N;j++) {
+        if (visited[(N-1)*N+j]) return true;
+      }
+      return false;
+    }
+
+    // ── Render ───────────────────────────────────────────────────────
+    // Colormap for landscape (cool blues/purples for low, warm for high)
+    const CMAP_COLD = [[10,10,40],[30,60,140],[80,130,200],[180,210,240],[255,255,255]];
+    const CMAP_HOT  = [[255,255,255],[240,200,100],[220,100,20],[160,20,10],[60,0,20]];
+
+    function cmapBlend(t, cmap) {
+      t = Math.max(0,Math.min(1,t));
+      const pos=t*(cmap.length-1), lo=Math.floor(pos), hi=Math.min(lo+1,cmap.length-1), f=pos-lo;
+      const a=cmap[lo], b=cmap[hi];
+      return [a[0]+f*(b[0]-a[0]),a[1]+f*(b[1]-a[1]),a[2]+f*(b[2]-a[2])];
+    }
+
+    function render(threshold) {
+      const img = offCtx.createImageData(N,N);
+      const d=img.data;
+      for (let k=0;k<N*N;k++) {
+        const w=W[k];
+        let r,g,b;
+        if (w < threshold) {
+          // sublevel set: blue gradient
+          const t = w/Math.max(threshold,0.001);
+          const c = cmapBlend(t, CMAP_COLD);
+          r=c[0]; g=c[1]; b=c[2];
+        } else {
+          // above threshold: warm/dark
+          const t = Math.min((w-threshold)/(1-threshold+0.001),1);
+          const c = cmapBlend(t, CMAP_HOT);
+          r=c[0]; g=c[1]; b=c[2];
+        }
+        d[k*4]=r; d[k*4+1]=g; d[k*4+2]=b; d[k*4+3]=255;
+      }
+      offCtx.putImageData(img,0,0);
+      ctx.imageSmoothingEnabled=true;
+      ctx.imageSmoothingQuality='high';
+      ctx.drawImage(offCanvas,0,0,canvas.width,canvas.height);
+    }
+
+    // ── UI ───────────────────────────────────────────────────────────
+    const energySlider   = document.getElementById('energySlider');
+    const strengthSlider = document.getElementById('strengthSlider');
+    const corrSlider     = document.getElementById('corrSlider');
+    const energyVal      = document.getElementById('energyVal');
+    const strengthVal    = document.getElementById('strengthVal');
+    const corrVal        = document.getElementById('corrVal');
+    const statusEl       = document.getElementById('statusLine');
+    const percBadge      = document.getElementById('percBadge');
+
+    function updateLabels() {
+      energyVal.textContent   = (parseInt(energySlider.value)/100).toFixed(2);
+      strengthVal.textContent = parseFloat(strengthSlider.value).toFixed(1);
+      corrVal.textContent     = corrSlider.value + ' px';
+    }
+
+    function updateDisplay() {
+      const threshold = parseInt(energySlider.value) / 100;
+      render(threshold);
+      const perc = checkPercolation(threshold);
+      percBadge.textContent = perc ? 'Percolating (extended)' : 'Localized';
+      percBadge.className = 'percolation-badge ' + (perc ? 'badge-percolating' : 'badge-localized');
+      statusEl.textContent = `E = ${threshold.toFixed(2)}: sublevel set ${perc ? 'spans the domain' : 'is fragmented'}.`;
+    }
+
+    energySlider.addEventListener('input', () => { updateLabels(); updateDisplay(); });
+    strengthSlider.addEventListener('input', updateLabels);
+    corrSlider.addEventListener('input', updateLabels);
+
+    function init() {
+      strength = parseFloat(strengthSlider.value);
+      corrLen  = parseInt(corrSlider.value);
+      statusEl.textContent = 'Generating potential…';
+      updateLabels();
+      setTimeout(() => {
+        generatePotential();
+        statusEl.textContent = 'Solving landscape…';
+        setTimeout(() => {
+          computeW();
+          updateDisplay();
+        }, 20);
+      }, 20);
+    }
+
+    document.getElementById('btnRegen').addEventListener('click', init);
+    updateLabels();
+    init();
+  })();
+  </script>
+</body>
+</html>

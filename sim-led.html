@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LED / Semiconductor Quantum Well – Svitlana Mayboroda</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    main { display: block; }
+    .page-title { font-size: 1.3rem; margin: 16px 0 4px; }
+
+    .sim-layout {
+      display: grid;
+      grid-template-columns: 1fr 240px;
+      gap: 16px;
+      align-items: start;
+      margin-top: 12px;
+    }
+    @media (max-width: 780px) { .sim-layout { grid-template-columns: 1fr; } }
+
+    .dual-canvas-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .canvas-col { display: flex; flex-direction: column; gap: 4px; }
+
+    .canvas-label {
+      font-size: 0.78rem;
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: bold;
+      text-align: center;
+      color: #555;
+    }
+    body.theme-dark .canvas-label { color: #9090b0; }
+
+    canvas.sim-canvas {
+      display: block;
+      width: 100%;
+      aspect-ratio: 1;
+      image-rendering: pixelated;
+      border: 1px solid #555;
+    }
+    body:not(.theme-dark) canvas.sim-canvas { border-color: #aaa; }
+
+    .sim-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 0.84rem;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    .sim-panel label { display: block; margin-bottom: 2px; font-weight: bold; }
+    .sim-panel input[type=range] { width: 100%; }
+    .val-display { font-size: 0.75rem; color: #aaa; }
+    body:not(.theme-dark) .val-display { color: #777; }
+
+    .sim-btn {
+      display: block;
+      width: 100%;
+      padding: 6px 10px;
+      font-size: 0.8rem;
+      font-family: Arial, Helvetica, sans-serif;
+      border: 1px solid #666;
+      background: #1b1b2a;
+      color: #e2e2f0;
+      cursor: pointer;
+      text-align: left;
+    }
+    .sim-btn:hover { background: #2a2a40; }
+    body:not(.theme-dark) .sim-btn { background: #f0f0f0; color: #111; border-color: #aaa; }
+    body:not(.theme-dark) .sim-btn:hover { background: #e0e0f0; }
+
+    .sim-legend {
+      margin-top: 6px;
+      font-size: 0.73rem;
+      color: #9090b0;
+      line-height: 1.5;
+    }
+    body:not(.theme-dark) .sim-legend { color: #555; }
+
+    .status-line {
+      font-size: 0.72rem;
+      color: #777;
+      margin-top: 6px;
+      min-height: 1em;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .sim-info {
+      margin-top: 20px;
+      padding: 12px 14px;
+      border-left: 3px solid #4a4a6a;
+      background: #10101b;
+      font-size: 0.85rem;
+      color: #c0c0d5;
+      line-height: 1.65;
+    }
+    .sim-info h3 { margin: 0 0 6px; font-size: 0.92rem; color: #e2e2f0; }
+    .sim-info a  { color: #9acbff; }
+    .sim-info em { color: #9acbff; font-style: normal; font-weight: bold; }
+    body:not(.theme-dark) .sim-info { background: #fafafa; border-left-color: #aaa; color: #444; }
+    body:not(.theme-dark) .sim-info h3 { color: #111; }
+    body:not(.theme-dark) .sim-info a  { color: #00c; }
+    body:not(.theme-dark) .sim-info em { color: #005; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div id="site-header"></div>
+
+    <h2 class="page-title">LED / Semiconductor Quantum Well</h2>
+
+    <div class="sim-layout">
+      <div>
+        <div class="dual-canvas-wrap">
+          <div class="canvas-col">
+            <div class="canvas-label">Alloy disorder V(x,y)</div>
+            <canvas class="sim-canvas" id="canvasPotential" width="96" height="96"></canvas>
+          </div>
+          <div class="canvas-col">
+            <div class="canvas-label">Carrier density &rho;</div>
+            <canvas class="sim-canvas" id="canvasDensity" width="96" height="96"></canvas>
+          </div>
+        </div>
+        <div class="status-line" id="statusLine">Initializing&hellip;</div>
+      </div>
+
+      <div class="sim-panel">
+        <div>
+          <label>Disorder strength <span class="val-display" id="strengthVal"></span></label>
+          <input type="range" id="strengthSlider" min="1" max="20" value="10" step="0.5">
+        </div>
+        <div>
+          <label>Correlation length <span class="val-display" id="corrVal"></span></label>
+          <input type="range" id="corrSlider" min="3" max="30" value="10" step="1">
+        </div>
+        <div>
+          <label>Temperature kT <span class="val-display" id="ktVal"></span></label>
+          <input type="range" id="ktSlider" min="1" max="50" value="10" step="1">
+        </div>
+        <button class="sim-btn" id="btnRegen">&#8635; New alloy</button>
+        <div class="sim-legend">
+          <strong>Left</strong>: alloy disorder (indium fraction variation).<br>
+          <strong>Right</strong>: carrier density &rho;&nbsp;&prop;&nbsp;exp(&minus;W/kT),
+          where W&nbsp;=&nbsp;1/u is the localization landscape.<br>
+          Lower kT concentrates carriers more sharply.
+        </div>
+      </div>
+    </div>
+
+    <div class="sim-info">
+      <h3>What are you seeing?</h3>
+      <p>
+        In a <strong>InGaN quantum well</strong> &mdash; the light-emitting layer in modern LEDs &mdash;
+        the indium (In) concentration varies randomly at the nanoscale.
+        This spatial disorder creates a random potential V(x,y) for electrons and holes.
+      </p>
+      <p>
+        Rather than solving for every quantum state, the
+        <em>localization landscape</em> W&nbsp;=&nbsp;1/u gives an effective potential
+        that immediately reveals where carriers accumulate.
+        The <strong>carrier density</strong> &rho;&nbsp;&prop;&nbsp;exp(&minus;W/kT)
+        is a Boltzmann-weighted occupation of the landscape wells.
+      </p>
+      <p>
+        This predicts the <strong>Stokes shift</strong> (emission redshifted from absorption),
+        the <strong>internal quantum efficiency</strong> droop at high current, and the
+        spatial distribution of recombination &mdash; all without expensive full quantum calculations.
+        See: <a href="https://arxiv.org/abs/2112.06485" target="_blank" rel="noopener noreferrer">
+        Banon, Pelletier, Weisbuch, Filoche &amp; Mayboroda, <em>Phys. Rev. B</em> 2022</a>.
+      </p>
+    </div>
+
+    <div id="site-footer"></div>
+  </div>
+
+  <script src="components.js"></script>
+  <script>
+  (function () {
+    const N = 96;
+
+    const canvasP = document.getElementById('canvasPotential');
+    const canvasD = document.getElementById('canvasDensity');
+    const ctxP = canvasP.getContext('2d');
+    const ctxD = canvasD.getContext('2d');
+    const offP = document.createElement('canvas'); offP.width = offP.height = N;
+    const offD = document.createElement('canvas'); offD.width = offD.height = N;
+    const offCtxP = offP.getContext('2d');
+    const offCtxD = offD.getContext('2d');
+
+    let V   = new Float32Array(N * N);
+    let uLS = new Float32Array(N * N).fill(0.5);
+    let strength = 10, corrLen = 10;
+
+    // Viridis-inspired colormap for density (dark purple → blue → green → yellow)
+    const CMAP_VIR = [
+      [ 68,   1,  84],
+      [ 59,  82, 139],
+      [ 33, 145, 140],
+      [ 94, 201, 98],
+      [253, 231,  37],
+    ];
+    // Hot colormap for potential
+    const CMAP_HOT2 = [
+      [  0,   0,  50],
+      [ 60,   0, 100],
+      [180,  20,  20],
+      [240, 120,   0],
+      [255, 240, 100],
+    ];
+
+    function cmap(t, table) {
+      t = Math.max(0,Math.min(1,t));
+      const pos=t*(table.length-1), lo=Math.floor(pos), hi=Math.min(lo+1,table.length-1), f=pos-lo;
+      const a=table[lo], b=table[hi];
+      return [a[0]+f*(b[0]-a[0]),a[1]+f*(b[1]-a[1]),a[2]+f*(b[2]-a[2])];
+    }
+
+    function renderField(field, targetCtx, targetCanvas, offCvs, offCx, colorTable, invert) {
+      let mn=field[0], mx=field[0];
+      for(let k=1;k<N*N;k++){if(field[k]<mn)mn=field[k];if(field[k]>mx)mx=field[k];}
+      const rng=mx-mn||1;
+      const img=offCx.createImageData(N,N);
+      const d=img.data;
+      for(let k=0;k<N*N;k++){
+        let t=(field[k]-mn)/rng;
+        if(invert) t=1-t;
+        const [r,g,b]=cmap(t,colorTable);
+        d[k*4]=r; d[k*4+1]=g; d[k*4+2]=b; d[k*4+3]=255;
+      }
+      offCx.putImageData(img,0,0);
+      targetCtx.imageSmoothingEnabled=true;
+      targetCtx.imageSmoothingQuality='high';
+      targetCtx.drawImage(offCvs,0,0,targetCanvas.width,targetCanvas.height);
+    }
+
+    function generatePotential() {
+      V.fill(0);
+      for(let m=0;m<50;m++){
+        const kx=(2*Math.PI/corrLen)*(Math.random()*2-1);
+        const ky=(2*Math.PI/corrLen)*(Math.random()*2-1);
+        const phi=Math.random()*2*Math.PI;
+        const amp=Math.random();
+        for(let i=0;i<N;i++) for(let j=0;j<N;j++) V[i*N+j]+=amp*Math.cos(kx*i+ky*j+phi);
+      }
+      let mn=V[0],mx=V[0];
+      for(let k=1;k<N*N;k++){if(V[k]<mn)mn=V[k];if(V[k]>mx)mx=V[k];}
+      const rng=mx-mn||1;
+      for(let k=0;k<N*N;k++) V[k]=strength*(V[k]-mn)/rng;
+    }
+
+    function solveLandscape(iters) {
+      for(let s=0;s<iters;s++){
+        for(let i=0;i<N;i++){
+          const im=(i-1+N)%N, ip=(i+1)%N;
+          for(let j=0;j<N;j++){
+            const jm=(j-1+N)%N, jp=(j+1)%N;
+            const nbr=uLS[im*N+j]+uLS[ip*N+j]+uLS[i*N+jm]+uLS[i*N+jp];
+            uLS[i*N+j]=(1+nbr)/(4+V[i*N+j]);
+          }
+        }
+      }
+    }
+
+    function computeCarrierDensity(kT) {
+      // rho(x) proportional to exp(-W(x) / kT), W = 1/u
+      const density = new Float32Array(N*N);
+      // find min of W for numerical stability
+      let minW = Infinity;
+      for(let k=0;k<N*N;k++){
+        const w=1/(uLS[k]+1e-6);
+        if(w<minW) minW=w;
+      }
+      for(let k=0;k<N*N;k++){
+        const w=1/(uLS[k]+1e-6);
+        density[k]=Math.exp(-(w-minW)/kT);
+      }
+      return density;
+    }
+
+    const strengthSlider = document.getElementById('strengthSlider');
+    const corrSlider     = document.getElementById('corrSlider');
+    const ktSlider       = document.getElementById('ktSlider');
+    const strengthVal    = document.getElementById('strengthVal');
+    const corrVal        = document.getElementById('corrVal');
+    const ktVal          = document.getElementById('ktVal');
+    const statusEl       = document.getElementById('statusLine');
+
+    function updateLabels() {
+      strengthVal.textContent = parseFloat(strengthSlider.value).toFixed(1);
+      corrVal.textContent     = corrSlider.value + ' px';
+      ktVal.textContent       = parseFloat(ktSlider.value).toFixed(0);
+    }
+
+    function renderDensity() {
+      const kT = parseFloat(ktSlider.value) * 0.1; // scale factor
+      const density = computeCarrierDensity(kT);
+      renderField(density, ctxD, canvasD, offD, offCtxD, CMAP_VIR, false);
+      statusEl.textContent = `kT = ${parseFloat(ktSlider.value).toFixed(0)} (relative units). Carriers concentrate in landscape wells.`;
+    }
+
+    ktSlider.addEventListener('input', () => { updateLabels(); renderDensity(); });
+    strengthSlider.addEventListener('input', updateLabels);
+    corrSlider.addEventListener('input', updateLabels);
+
+    function init() {
+      strength = parseFloat(strengthSlider.value);
+      corrLen  = parseInt(corrSlider.value);
+      statusEl.textContent = 'Generating alloy disorder…';
+      updateLabels();
+      setTimeout(() => {
+        generatePotential();
+        renderField(V, ctxP, canvasP, offP, offCtxP, CMAP_HOT2, false);
+        statusEl.textContent = 'Solving landscape…';
+        setTimeout(() => {
+          uLS.fill(0.5);
+          solveLandscape(800);
+          renderDensity();
+        }, 20);
+      }, 20);
+    }
+
+    document.getElementById('btnRegen').addEventListener('click', init);
+    updateLabels();
+    init();
+  })();
+  </script>
+</body>
+</html>
