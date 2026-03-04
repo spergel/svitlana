@@ -106,7 +106,7 @@
 
     <div class="sim-layout">
       <div>
-        <canvas id="simCanvas" width="460" height="300"></canvas>
+        <canvas id="simCanvas" width="460" height="380"></canvas>
         <div class="status-line" id="statusLine">Initializing&hellip;</div>
       </div>
 
@@ -166,9 +166,11 @@
   <script>
   (function () {
     const N  = 32; // grid size (fast enough for 3D rendering)
-    const CW = 460, CH = 300; // canvas logical size
+    const CW = 460, CH = 380; // canvas logical size
     const TW = 7, TH = 3.5;  // isometric tile half-widths
-    const CX = CW / 2, CY = 90; // isometric center
+    // CY chosen so grid bottom (CY + 2*(N-1)*TH = CY+217) fits in CH,
+    // and tallest peak (CY - maxHeightScale=120) stays above y=0.
+    const CX = CW / 2, CY = 145; // isometric center
 
     const canvas = document.getElementById('simCanvas');
     const ctx    = canvas.getContext('2d');
@@ -238,62 +240,61 @@
     // ── Landscape solver ─────────────────────────────────────────────
     let uLS = new Float32Array(N * N).fill(0.5);
 
+    // Gauss-Seidel for (-Δ + V)u = 1 with Dirichlet BCs (u=0 on boundary).
+    // Boundary nodes stay zero throughout; only interior nodes are updated.
     function solveLandscape(iters) {
       for (let s = 0; s < iters; s++) {
-        for (let i = 0; i < N; i++) {
-          const im = (i - 1 + N) % N, ip = (i + 1) % N;
-          for (let j = 0; j < N; j++) {
-            const jm = (j - 1 + N) % N, jp = (j + 1) % N;
-            const nbr = uLS[im*N+j] + uLS[ip*N+j] + uLS[i*N+jm] + uLS[i*N+jp];
+        for (let i = 1; i < N - 1; i++) {
+          for (let j = 1; j < N - 1; j++) {
+            const nbr = uLS[(i-1)*N+j] + uLS[(i+1)*N+j] + uLS[i*N+j-1] + uLS[i*N+j+1];
             uLS[i*N+j] = (1 + nbr) / (4 + V[i*N+j]);
           }
         }
       }
     }
 
-    // ── Watershed partition (multi-source BFS from peaks of u) ───────
+    // ── Watershed partition (gradient-ascent) ────────────────────────
+    // Each cell is assigned to whichever local maximum its uphill path
+    // leads to.  This matches the landscape topology: region boundaries
+    // fall where the landscape gradient-lines diverge, NOT where BFS
+    // distance is equal (which would give a Voronoi / wrong partition).
     let region = new Int32Array(N * N).fill(-1);
     let numPeaks = 0;
 
     function computeWatershed() {
       region.fill(-1);
       numPeaks = 0;
-      const queue = [];
 
+      // 1. Label all strict local maxima as region seeds.
       for (let i = 1; i < N - 1; i++) {
         for (let j = 1; j < N - 1; j++) {
           const k = i * N + j;
-          const v = uLS[k];
-          if (v > uLS[(i-1)*N+j] && v > uLS[(i+1)*N+j] &&
-              v > uLS[k-1]        && v > uLS[k+1]) {
+          if (uLS[k] > uLS[(i-1)*N+j] && uLS[k] > uLS[(i+1)*N+j] &&
+              uLS[k] > uLS[k-1]        && uLS[k] > uLS[k+1]) {
             region[k] = numPeaks++;
-            queue.push(k);
           }
         }
       }
 
-      // BFS: flood from all peaks simultaneously
-      let head = 0;
-      while (head < queue.length) {
-        const k = queue[head++];
-        const label = region[k];
-        const i = Math.floor(k / N), j = k % N;
-        const nbrs = [
-          i > 0     ? (i-1)*N+j : -1,
-          i < N-1   ? (i+1)*N+j : -1,
-          j > 0     ? k-1       : -1,
-          j < N-1   ? k+1       : -1,
-        ];
-        for (const nb of nbrs) {
-          if (nb >= 0 && region[nb] === -1) {
-            region[nb] = label;
-            queue.push(nb);
-          }
+      // 2. For every unlabeled cell, follow the steepest-ascent path
+      //    until a labeled cell is reached, then back-fill the path.
+      for (let start = 0; start < N * N; start++) {
+        if (region[start] !== -1) continue;
+        const path = [];
+        let cur = start;
+        while (region[cur] === -1) {
+          path.push(cur);
+          const ci = Math.floor(cur / N), cj = cur % N;
+          let nxt = -1, nxtVal = uLS[cur];
+          if (ci > 0   && uLS[(ci-1)*N+cj] > nxtVal) { nxtVal = uLS[(ci-1)*N+cj]; nxt = (ci-1)*N+cj; }
+          if (ci < N-1 && uLS[(ci+1)*N+cj] > nxtVal) { nxtVal = uLS[(ci+1)*N+cj]; nxt = (ci+1)*N+cj; }
+          if (cj > 0   && uLS[cur-1]        > nxtVal) { nxtVal = uLS[cur-1];        nxt = cur-1; }
+          if (cj < N-1 && uLS[cur+1]        > nxtVal) { nxtVal = uLS[cur+1];        nxt = cur+1; }
+          if (nxt === -1) { region[cur] = numPeaks++; break; } // isolated flat max
+          cur = nxt;
         }
-      }
-      // Fill any boundary/unlabeled cells
-      for (let k = 0; k < N * N; k++) {
-        if (region[k] === -1) region[k] = 0;
+        const label = region[cur];
+        for (const p of path) region[p] = label;
       }
     }
 
@@ -353,24 +354,26 @@
         ctx.fill();
       }
 
-      // Draw watershed boundary lines (at low height = near floor, visible between peaks)
+      // Draw watershed boundary lines following the surface height.
+      // Drawing at actual surface height (average of the two adjacent nodes)
+      // keeps the lines on the terrain so they visually match the topology.
       ctx.strokeStyle = '#ee2222';
       ctx.lineWidth = 1.4;
       for (let i = 0; i < N - 1; i++) {
         for (let j = 0; j < N - 1; j++) {
           const k = i * N + j;
-          // Horizontal boundary: between row i and i+1
+          // Boundary between row i and row i+1
           if (region[k] !== region[(i+1)*N+j]) {
-            const h0 = Math.min(norm(k), norm((i+1)*N+j)) * heightScale * 0.12;
-            const h1 = Math.min(norm(k+1), norm((i+1)*N+j+1)) * heightScale * 0.12;
+            const h0 = (norm(k) + norm((i+1)*N+j))     / 2 * heightScale;
+            const h1 = (norm(k+1) + norm((i+1)*N+j+1)) / 2 * heightScale;
             const [x0, y0] = project(i+1, j,   h0);
             const [x1, y1] = project(i+1, j+1, h1);
             ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke();
           }
-          // Vertical boundary: between col j and j+1
+          // Boundary between col j and col j+1
           if (region[k] !== region[k+1]) {
-            const h0 = Math.min(norm(k), norm(k+1)) * heightScale * 0.12;
-            const h1 = Math.min(norm((i+1)*N+j), norm((i+1)*N+j+1)) * heightScale * 0.12;
+            const h0 = (norm(k) + norm(k+1))                         / 2 * heightScale;
+            const h1 = (norm((i+1)*N+j) + norm((i+1)*N+j+1))         / 2 * heightScale;
             const [x0, y0] = project(i,   j+1, h0);
             const [x1, y1] = project(i+1, j+1, h1);
             ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke();
@@ -378,17 +381,26 @@
         }
       }
 
-      // Mark peak locations with a small bright dot
+      // Mark peak locations: draw a thin stem from floor to peak, then a dot
+      // at the top.  The floor anchor makes it clear which ground cell the
+      // peak belongs to, resolving the isometric projection ambiguity.
       for (let i = 1; i < N - 1; i++) {
         for (let j = 1; j < N - 1; j++) {
           const k = i * N + j;
           if (uLS[k] > uLS[(i-1)*N+j] && uLS[k] > uLS[(i+1)*N+j] &&
               uLS[k] > uLS[k-1]        && uLS[k] > uLS[k+1]) {
-            const [sx, sy] = project(i, j, norm(k) * heightScale);
-            ctx.fillStyle = 'rgba(255,255,220,0.9)';
-            ctx.beginPath();
-            ctx.arc(sx, sy, 2.5, 0, Math.PI * 2);
-            ctx.fill();
+            const [fx, fy] = project(i, j, 0);
+            const [px, py] = project(i, j, norm(k) * heightScale);
+            // stem
+            ctx.strokeStyle = 'rgba(255,255,200,0.5)';
+            ctx.lineWidth = 0.8;
+            ctx.beginPath(); ctx.moveTo(fx, fy); ctx.lineTo(px, py); ctx.stroke();
+            // floor anchor
+            ctx.fillStyle = 'rgba(255,210,80,0.85)';
+            ctx.beginPath(); ctx.arc(fx, fy, 2, 0, Math.PI * 2); ctx.fill();
+            // peak tip
+            ctx.fillStyle = 'rgba(255,255,220,0.95)';
+            ctx.beginPath(); ctx.arc(px, py, 2.5, 0, Math.PI * 2); ctx.fill();
           }
         }
       }
@@ -426,6 +438,10 @@
         generatePotential();
         statusEl.textContent = 'Solving landscape…';
         uLS.fill(0.5);
+        // enforce Dirichlet boundary (u=0 on all four edges)
+        for (let k = 0; k < N; k++) {
+          uLS[k] = uLS[(N-1)*N+k] = uLS[k*N] = uLS[k*N+N-1] = 0;
+        }
         setTimeout(() => {
           solveLandscape(600);
           statusEl.textContent = 'Computing partition…';

@@ -278,23 +278,29 @@
     }
 
     // ── Landscape solver (Gauss-Seidel) ─────────────────────────────
+    // Solves (-Δ + V)u = 1 with Dirichlet BCs — must match the Dirichlet
+    // BCs used by applyA/solveShiftedGS so W=1/u correctly predicts
+    // where eigenfunctions concentrate.
     let uLS = new Float32Array(N * N).fill(0.5);
 
     function solveLandscape(iters) {
       for (let s = 0; s < iters; s++) {
-        for (let i = 0; i < N; i++) {
-          const im=(i-1+N)%N, ip=(i+1)%N;
-          for (let j = 0; j < N; j++) {
-            const jm=(j-1+N)%N, jp=(j+1)%N;
-            const nbr = uLS[im*N+j]+uLS[ip*N+j]+uLS[i*N+jm]+uLS[i*N+jp];
+        for (let i = 1; i < N - 1; i++) {
+          for (let j = 1; j < N - 1; j++) {
+            const nbr = uLS[(i-1)*N+j]+uLS[(i+1)*N+j]+uLS[i*N+j-1]+uLS[i*N+j+1];
             uLS[i*N+j] = (1 + nbr) / (4 + V[i*N+j]);
           }
         }
+        // boundary nodes stay zero (Dirichlet)
       }
     }
 
     function computeLandscape() {
       uLS.fill(0.5);
+      // zero boundary to match Dirichlet eigensolver
+      for (let k = 0; k < N; k++) {
+        uLS[k] = uLS[(N-1)*N+k] = uLS[k*N] = uLS[k*N+N-1] = 0;
+      }
       solveLandscape(800);
     }
 
