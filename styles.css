@@ -13,13 +13,18 @@ html, body {
 body {
   padding: 24px 16px;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   min-height: 100vh;
 }
 
 .page {
   width: 100%;
   max-width: 960px;
+  margin-left: 56px;
+}
+
+@media (max-width: 700px) {
+  .page { margin-left: 0; }
 }
 
 /* ── Header ── */
@@ -29,9 +34,13 @@ body {
   align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
-  padding-bottom: 12px;
+  padding-bottom: 14px;
   border-bottom: 2px solid #111;
   margin-bottom: 20px;
+  /* Bleed the header slab to the left viewport edge */
+  margin-left: -72px;
+  padding-left: 72px;
+  background: rgba(0, 0, 0, 0.03);
 }
 
 .site-header-identity {
@@ -136,14 +145,16 @@ main {
 /* ── Cards ── */
 .card {
   border: 1px solid #bbb;
-  padding: 14px 16px;
+  padding: 14px 16px 14px 32px;
 }
 
 .card h2 {
   font-size: 1rem;
-  margin: 0 0 8px;
+  margin: 0 0 8px -18px;
   padding-bottom: 4px;
+  padding-left: 6px;
   border-bottom: 1px solid #ddd;
+  border-left: 3px solid #999;
 }
 
 .card p {
@@ -259,6 +270,7 @@ body.theme-dark .page {
 body.theme-dark .site-header {
   border-bottom: 2px solid transparent;
   border-image: linear-gradient(to right, #5a1a70, #d96010, #00c898, #5a1a70) 1;
+  background: rgba(255, 255, 255, 0.03);
 }
 
 body.theme-dark .site-photo-link {
@@ -298,6 +310,7 @@ body.theme-dark .card {
 body.theme-dark .card h2 {
   border-bottom: 1px solid transparent;
   border-image: linear-gradient(to right, #8a38a8, #d46010, transparent) 1;
+  border-left: 3px solid #5a5a8a;
 }
 
 body.theme-dark .card p {
@@ -615,9 +628,10 @@ body.theme-dark .sim-hub-card .sim-hub-tag {
  */
 @media (min-width: 1140px) {
   body {
-    /* Shift centering context left so content sits between the left edge
-       and the decorative bar rather than between both page edges. */
-    padding-right: min(220px, calc((100vw - 992px) / 2));
+    /* Reserve space so the content column never runs into the decorative bar.
+       Bar occupies everything right of the content (1032px) minus a 48px gap,
+       capped at 420px on very wide monitors. */
+    padding-right: min(420px, calc(100vw - 1080px));
   }
 
   body::after {
@@ -628,13 +642,13 @@ body.theme-dark .sim-hub-card .sim-hub-tag {
        margins of the source image fall outside the visible area. */
     top: -16px;
     height: calc(100vh + 32px);
-    width: min(220px, calc((100vw - 992px) / 2));
+    width: min(420px, calc(100vw - 1080px));
     background: url('images/fielding-turbulence.png') 20% center / cover no-repeat;
     opacity: 0.22;
     pointer-events: none;
     z-index: 0;
-    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 40%);
-            mask-image: linear-gradient(to right, transparent 0%, black 40%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 35%);
+            mask-image: linear-gradient(to right, transparent 0%, black 35%);
   }
 
   body.theme-dark::after {
