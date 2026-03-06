@@ -624,16 +624,15 @@ body.theme-dark .sim-hub-card .sim-hub-tag {
     content: '';
     position: fixed;
     right: 0;
-    top: 0;
-    height: 100vh;
+    /* Extend 16px beyond the viewport top and bottom so the white
+       margins of the source image fall outside the visible area. */
+    top: -16px;
+    height: calc(100vh + 32px);
     width: min(220px, calc((100vw - 992px) / 2));
     background: url('images/fielding-turbulence.png') 20% center / cover no-repeat;
     opacity: 0.22;
     pointer-events: none;
     z-index: 0;
-    /* Clip a few pixels off each edge to hide the thin white strips
-       that appear at the top and bottom of the source image. */
-    clip-path: inset(6px 0);
     -webkit-mask-image: linear-gradient(to right, transparent 0%, black 40%);
             mask-image: linear-gradient(to right, transparent 0%, black 40%);
   }
