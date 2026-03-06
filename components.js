@@ -4,9 +4,10 @@
     { href: 'publications.html', label: 'Publications' },
     { href: 'organized.html',    label: 'Conferences' },
     { href: 'Vitae.pdf',         label: 'CV', attrs: 'target="_blank" rel="noopener noreferrer"' },
-    { href: 'teaching.html',     label: 'Students &amp; Teaching' },
+    { href: 'teaching.html',     label: 'Students &amp; Postdocs' },
     { href: 'media.html',        label: 'Media' },
     { href: 'simulations.html',  label: 'Simulations' },
+    { href: 'awards.html',       label: 'Awards &amp; Honors' },
     { href: 'gallery.html',      label: 'Gallery' },
   ];
 
@@ -100,7 +101,7 @@
   <div class="footer-inner">
     <span>&copy; <span class="footer-year"></span> Svitlana Mayboroda</span>
     <span class="footer-sep">&middot;</span>
-    <a href="mailto:svitlana@math.umn.edu">svitlana@math.umn.edu</a>
+    <a href="mailto:svitlana.mayboroda@math.ethz.ch">svitlana.mayboroda@math.ethz.ch</a>
     <span class="footer-sep">&middot;</span>
     <a href="Vitae.pdf" target="_blank" rel="noopener noreferrer">Curriculum Vitae</a>
   </div>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Awards &amp; Honors – Svitlana Mayboroda</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    main { display: block; }
+    .page-title { font-size: 1.3rem; margin: 16px 0 20px; }
+    .award-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .award-list li {
+      display: grid;
+      grid-template-columns: 52px 1fr;
+      gap: 10px;
+      align-items: baseline;
+      font-size: 0.88rem;
+      line-height: 1.5;
+      padding: 7px 10px;
+      border-left: 3px solid #ccc;
+      margin-bottom: 5px;
+      background: #fafafa;
+    }
+    @media (max-width: 600px) {
+      .award-list li { grid-template-columns: 1fr; gap: 1px; }
+    }
+    .award-year {
+      font-size: 0.82rem;
+      font-weight: bold;
+      color: #333;
+      white-space: nowrap;
+    }
+    body.theme-dark .award-list li {
+      background: #1b1b2a;
+      border-left-color: #4a4a6a;
+    }
+    body.theme-dark .award-year {
+      color: #9090b0;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div id="site-header"></div>
+
+    <main>
+      <h2 class="page-title">Awards &amp; Honors</h2>
+      <ul class="award-list">
+        <li>
+          <span class="award-year">2025</span>
+          <span>Blaise Pascal Medal</span>
+        </li>
+        <li>
+          <span class="award-year">2025</span>
+          <span>German National Academy of Sciences Leopoldina</span>
+        </li>
+        <li>
+          <span class="award-year">2025</span>
+          <span>Member of Academia Europaea</span>
+        </li>
+        <li>
+          <span class="award-year">2025</span>
+          <span>Simons Initiative on Geometry of Flows, Director, 2025–2030</span>
+        </li>
+        <li>
+          <span class="award-year">2025</span>
+          <span>von Neumann Lecture at the Joint Math Meeting 2026</span>
+        </li>
+        <li>
+          <span class="award-year">2024</span>
+          <span>Fellow of the European Academy of Sciences</span>
+        </li>
+        <li>
+          <span class="award-year">2023</span>
+          <span>Stein Prize for New Perspectives in Analysis</span>
+        </li>
+        <li>
+          <span class="award-year">2023</span>
+          <span>US Blavatnik National Award</span>
+        </li>
+        <li>
+          <span class="award-year">2018</span>
+          <span>Simons Collaborations in MPS, Director of Collaboration, 2018–2025</span>
+        </li>
+        <li>
+          <span class="award-year">2018</span>
+          <span>Speaker at the ICM 2018</span>
+        </li>
+        <li>
+          <span class="award-year">2015</span>
+          <span>Fellow of the American Mathematical Society</span>
+        </li>
+        <li>
+          <span class="award-year">2014</span>
+          <span>AWM-Sadosky Prize in Analysis</span>
+        </li>
+        <li>
+          <span class="award-year">2014</span>
+          <span>Integrated NSF Support Promoting Interdisciplinary Research and Education (INSPIRE) Award, 2014–2019</span>
+        </li>
+        <li>
+          <span class="award-year">2011</span>
+          <span>NSF Faculty Early Career Development (CAREER) Award, 2011–2016: Analysis of Partial Differential Equations in non-smooth media</span>
+        </li>
+        <li>
+          <span class="award-year">2010</span>
+          <span>Alfred P. Sloan Research Fellowship, 2010–2015</span>
+        </li>
+      </ul>
+    </main>
+
+    <div id="site-footer"></div>
+  </div>
+
+  <script src="components.js"></script>
+</body>
+</html>
